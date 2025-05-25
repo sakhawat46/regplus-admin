@@ -1,0 +1,311 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Services Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Services Table -->
+<div class="card">
+  <h5 class="card-header d-flex justify-content-between align-items-center">
+    <span>Services Management</span>
+    <div class="d-flex align-items-center">
+      <div class="input-group input-group-merge me-3" style="width: 250px;">
+        <span class="input-group-text"><i class="bx bx-search"></i></span>
+        <input type="text" id="serviceSearch" class="form-control" placeholder="Search services..." aria-label="Search services">
+      </div>
+      <a href="{% url 'add_service' %}" class="btn btn-primary btn-sm">
+        <i class="bx bx-plus me-1"></i>Add New Service
+      </a>
+    </div>
+  </h5>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th width="60px">Image</th>
+          <th width="200px">Title</th>
+          <th>Description</th>
+          <th width="100px">Order</th>
+          <th width="100px">Status</th>
+          <th width="80px">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0" id="servicesTableBody">
+        {% for service in services %}
+        <tr class="service-row">
+          <td>
+            <div class="avatar avatar-sm me-2">
+              <img src="{{ service.image.url }}" alt="{{ service.title }}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+            </div>
+          </td>
+          <td>
+            <strong class="text-truncate d-inline-block" style="max-width: 180px;" title="{{ service.title }}">
+              {{ service.title }}
+            </strong>
+          </td>
+          <td>
+            <div class="text-truncate" style="max-width: 300px;" title="{{ service.description }}">
+              {{ service.description }}
+            </div>
+          </td>
+          <td>
+            <span class="badge bg-label-info">{{ service.service_showing_order }}</span>
+          </td>
+          <td>
+            <span class="badge bg-label-success">Active</span>
+          </td>
+          <td>
+            <div class="dropdown">
+              <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'update_service' service.id %}">
+                  <i class="bx bx-edit-alt me-1"></i> Edit
+                </a>
+                <a class="dropdown-item" href="{% url 'service_detail' service.id %}">
+                  <i class="bx bx-show me-1"></i> View
+                </a>
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ service.id }}">
+                  <i class="bx bx-trash me-1"></i> Delete
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal{{ service.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete the "{{ service.title }}" service?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" action="{% url 'delete_service' service.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center py-4">
+                  <a href="{% url 'add_service' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Add Your First Service
+                  </a>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="card-footer">
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="dataTables_info" role="status" aria-live="polite">
+                Showing {{ services.start_index }} to {{ services.end_index }} of {{ services.paginator.count }} entries
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <ul class="pagination justify-content-end">
+                    {% if services.has_previous %}
+                        <li class="paginate_button page-item previous">
+                            <a href="?page=1" class="page-link">&laquo; First</a>
+                        </li>
+                        <li class="paginate_button page-item">
+                            <a href="?page={{ services.previous_page_number }}" class="page-link">Previous</a>
+                        </li>
+                    {% else %}
+                        <li class="paginate_button page-item previous disabled">
+                            <a href="#" class="page-link">&laquo; First</a>
+                        </li>
+                        <li class="paginate_button page-item disabled">
+                            <a href="#" class="page-link">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in services.paginator.page_range %}
+                        {% if services.number == num %}
+                            <li class="paginate_button page-item active">
+                                <a href="#" class="page-link">{{ num }}</a>
+                            </li>
+                        {% elif num > services.number|add:'-3' and num < services.number|add:'3' %}
+                            <li class="paginate_button page-item">
+                                <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if services.has_next %}
+                        <li class="paginate_button page-item">
+                            <a href="?page={{ services.next_page_number }}" class="page-link">Next</a>
+                        </li>
+                        <li class="paginate_button page-item next">
+                            <a href="?page={{ services.paginator.num_pages }}" class="page-link">Last &raquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="paginate_button page-item disabled">
+                            <a href="#" class="page-link">Next</a>
+                        </li>
+                        <li class="paginate_button page-item next disabled">
+                            <a href="#" class="page-link">Last &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!--/ Services Table -->
+
+<!-- Info Alert -->
+<div class="alert alert-info mt-4">
+  <i class="bx bx-info-circle me-2"></i>
+  Services are displayed in the order specified by the "service_showing_order" field.
+</div>
+
+<!-- Popup Messages -->
+<div id="popup-messages" class="popup-messages-container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="popup-message {{ message.tags }}">
+                {{ message }}
+                <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<style>
+.popup-messages-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.popup-message {
+    background-color: #f44336;
+    color: white;
+    padding: 16px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    min-width: 250px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
+    animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+.popup-message.success { background-color: #4CAF50; }
+.popup-message.info { background-color: #2196F3; }
+.popup-message.warning { background-color: #ff9800; }
+.popup-message.error { background-color: #f44336; }
+
+.popup-message .close-btn {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+@keyframes fadein {
+    from { top: 0; opacity: 0; }
+    to { top: 20px; opacity: 1; }
+}
+
+@keyframes fadeout {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* Added to prevent horizontal scroll */
+.table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+}
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* No results message styling */
+.no-results {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+</style>
+
+<script>
+    // Auto-hide messages after 5 seconds
+    setTimeout(() => {
+        document.querySelectorAll('.popup-message').forEach(msg => {
+            msg.style.display = 'none';
+        });
+    }, 5000);
+
+    // Search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('serviceSearch');
+        const servicesTableBody = document.getElementById('servicesTableBody');
+        const serviceRows = document.querySelectorAll('.service-row');
+
+        // Create no results message if it doesn't exist
+        if (!document.querySelector('.no-results')) {
+            const noResults = document.createElement('tr');
+            noResults.className = 'no-results';
+            noResults.innerHTML = `
+                <td colspan="6">
+                    <div class="d-flex flex-column align-items-center py-4">
+                        <i class="bx bx-search-alt bx-lg mb-2" style="color: #6c757d;"></i>
+                        <p class="mb-0">No services found matching your search</p>
+                    </div>
+                </td>
+            `;
+            servicesTableBody.appendChild(noResults);
+        }
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            let hasResults = false;
+
+            serviceRows.forEach(row => {
+                const title = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const description = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    row.style.display = '';
+                    hasResults = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            const noResults = document.querySelector('.no-results');
+            if (hasResults || searchTerm === '') {
+                noResults.style.display = 'none';
+            } else {
+                noResults.style.display = '';
+            }
+        });
+    });
+</script>
+
+{% endblock %}

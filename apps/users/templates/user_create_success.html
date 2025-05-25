@@ -1,0 +1,40 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}User Created Successfully{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card mb-4">
+      <h5 class="card-header">User Created Successfully</h5>
+      <div class="card-body">
+        <div class="alert alert-success" role="alert">
+          User <strong>{{ created_user.username }}</strong> was created successfully.
+        </div>
+
+        <ul class="list-group mb-4">
+          <li class="list-group-item"><strong>First Name:</strong> {{ created_user.first_name }}</li>
+          <li class="list-group-item"><strong>Last Name:</strong> {{ created_user.last_name }}</li>
+          <li class="list-group-item"><strong>Email:</strong> {{ created_user.email }}</li>
+          <li class="list-group-item"><strong>Username:</strong> {{ created_user.username }}</li>
+          <li class="list-group-item"><strong>User Type:</strong> {{ created_user.user_type }}</li>
+          {% if created_user.avatar.avatar.url %}
+          <li class="list-group-item">
+            <strong>Avatar:</strong><br>
+            <img src="{{ created_user.avatar.avatar.url }}" alt="Avatar" class="img-thumbnail mt-2" style="max-width: 150px;">
+          </li>
+          {% endif %}
+        </ul>
+
+        <div class="d-grid gap-2">
+          <a href="{% url 'user-create' %}" class="btn btn-primary btn-lg">Create Another User</a>
+          <a href="{% url 'user-list' %}" class="btn btn-outline-secondary btn-lg">View All Users</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

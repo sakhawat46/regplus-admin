@@ -1,0 +1,29 @@
+{% extends layout_path %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block title %}Category form{% endblock %}
+
+{% block vendor_js %}
+{{ block.super }}
+<script src="{% static 'vendor/libs/masonry/masonry.js' %}"></script>
+{% endblock vendor_js %}
+
+{% block content %}
+
+<h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Category</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col">
+      {{ form.name|as_crispy_field }}
+    </div>
+    <div class="col">
+      {{ form.slug|as_crispy_field }}
+    </div>
+  </div>
+  <button type="submit" class="btn btn-success">Save</button>
+</form>
+
+{% endblock %}

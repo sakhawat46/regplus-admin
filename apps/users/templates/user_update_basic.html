@@ -1,0 +1,149 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Update User - {{ user.username }}{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Update User: {{ user.username }}</h5>
+        <a href="{% url 'user-list' %}" class="btn btn-sm btn-outline-secondary">
+          <i class="fas fa-arrow-left me-1"></i> Back to Users
+        </a>
+      </div>
+      <div class="card-body">
+          {% if updated_user %}
+            <div class="alert alert-success" role="alert">
+              <i class="fas fa-check-circle me-2"></i>
+              User {{ updated_user.username }} updated successfully.
+              <a href="{% url 'user_detail' pk=updated_user.pk %}" class="alert-link">View profile</a>
+            </div>
+          {% endif %}
+
+          {% if error %}
+          <div class="alert alert-danger" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ error }}
+          </div>
+          {% endif %}
+
+        <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="first_name" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+              <div class="invalid-feedback">
+                Please provide a first name.
+              </div>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="last_name" class="form-label">Last Name</label>
+              <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+              <div class="invalid-feedback">
+                Please provide a last name.
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+            <div class="invalid-feedback">
+              Please provide a valid email.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+            <div class="invalid-feedback">
+              Please choose a username.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Password (Leave blank to keep current)</label>
+            <input type="password" class="form-control" id="password" name="password" minlength="8">
+            <div class="invalid-feedback">
+              If changing, password must be at least 8 characters long.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="user_type" class="form-label">Role</label>
+            <select class="form-select" id="user_type" name="user_type" required>
+              <option value="user" {% if user.user_type == 'user' %}selected{% endif %}>User</option>
+              <option value="admin" {% if user.user_type == 'admin' %}selected{% endif %}>Admin</option>
+              <option value="manager" {% if user.user_type == 'manager' %}selected{% endif %}>Manager</option>
+              <option value="employee" {% if user.user_type == 'employee' %}selected{% endif %}>Employee</option>
+              <option value="hr" {% if user.user_type == 'hr' %}selected{% endif %}>HR</option>
+              <option value="editor" {% if user.user_type == 'editor' %}selected{% endif %}>Editor</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a user role.
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="avatar" class="form-label">Profile Picture</label>
+            {% if user.avatar.avatar %}
+              <div class="mb-2">
+                <img src="{{ user.avatar.avatar.url }}" alt="Current avatar" class="img-thumbnail" style="max-width: 100px; max-height: 100px;">
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="clear_avatar" name="clear_avatar">
+                  <label class="form-check-label" for="clear_avatar">
+                    Remove current avatar
+                  </label>
+                </div>
+              </div>
+            {% endif %}
+            <input class="form-control" type="file" id="avatar" name="avatar" accept="image/*">
+            <small class="text-muted">Optional. JPG, PNG or GIF. Leave blank to keep current.</small>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <a href="{% url 'user-list' %}" class="btn btn-outline-secondary">
+              <i class="fas fa-times me-2"></i> Cancel
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-2"></i> Update User
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+</script>
+
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends layout_path %}
+
+{% block content %}
+<div class="row justify-content-center">
+<div class="col-12">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-sm-flex align-items-center justify-content-between">
+                <h1 class="h3 mb-0 text-gray-800">Edit {{ view.model|title }} Settings</h1>
+                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm" onclick="window.history.back(); return false;">
+                    <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Settings
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Configuration</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                      <input type="hidden" name="next" value="{{ request.META.HTTP_REFERER }}">
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% for field in form %}
+                            <div class="mb-3 row">
+                                <label class="col-sm-3 col-form-label" for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span class="text-danger">*</span>
+                                    {% endif %}
+                                </label>
+                                <div class="col-sm-9">
+                                    <div class="input-group">
+                                      {% if field.name == 'clock_in_max_time' or field.name == 'clock_out_min_time' %}
+                                          <div class="input-group">
+                                              {{ field }}
+
+                                          </div>
+                                      {% else %}
+                                        {% if field.field.widget.input_type == 'file' and field.value %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text p-0 border-0 bg-transparent">
+                                                <img src="{{ field.value.url }}"  style=" height: 50px; object-fit: cover;">
+                                            </span>
+                                        </div>
+                                        {% endif %}
+                                        {{ field }}
+                                        {% endif %}
+
+                                    </div>
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                        <div class="invalid-feedback d-block">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <div class="form-group row">
+                            <div class="col-sm-9 offset-sm-3">
+                                <button type="submit" class="btn btn-primary">
+
+                                    <i class="fas fa-save"></i>{% if '/user/create/' in request.path %} Create user{% else %}Update User{% endif %}
+
+                                </button>
+
+                                <a href="#" class="btn btn-secondary" onclick="window.history.back(); return false;">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Initialize form fields with proper classes
+    $(document).ready(function() {
+        $('input:not([type="checkbox"]):not([type="radio"]), select, textarea').addClass('form-control');
+        $('input[type="checkbox"], input[type="radio"]').removeClass('form-control').addClass('form-check-input');
+
+        // Preview for image fields
+        $('input[type="file"]').change(function() {
+            var input = this;
+            var fieldName = $(this).attr('id');
+            var previewId = fieldName + '-preview';
+            var previewContainer = $(this).closest('.input-group').find('.input-group-prepend img');
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    if (previewContainer.length) {
+                        previewContainer.attr('src', e.target.result);
+                    } else {
+                        $(input).before(`
+                            <div class="input-group-prepend">
+                                <span class="input-group-text p-0 border-0 bg-transparent">
+                                    <img src="${e.target.result}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                </span>
+                            </div>
+                        `);
+                        // Add clear button if not exists
+                        if (!$(input).next('.input-group-append').length) {
+                            $(input).after(`
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-secondary btn-clear-image" data-target="#${fieldName}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            `);
+                        }
+                    }
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+
+        // Clear image button
+        $(document).on('click', '.btn-clear-image', function() {
+            var target = $(this).data('target');
+            $(target).val('');
+            $(this).closest('.input-group').find('.input-group-prepend').remove();
+            $(this).closest('.input-group-append').remove();
+        });
+
+        // Initialize existing image previews for file inputs
+        $('input[type="file"]').each(function() {
+            if ($(this).val() === '' && $(this).closest('.input-group').find('.input-group-prepend').length === 0) {
+                $(this).closest('.input-group').find('.input-group-append').remove();
+            }
+        });
+    });
+</script>
+{% endblock %}

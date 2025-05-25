@@ -1,0 +1,234 @@
+{% extends layout_path %}
+{% load static %}
+{% load i18n %}
+{% block title %}Category List{% endblock %}
+
+{% block vendor_js %}
+{{ block.super }}
+<script src="{% static 'vendor/libs/masonry/masonry.js' %}"></script>
+{% endblock vendor_js %}
+
+{% block content %}
+
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+        
+        h2 {
+            font-size: 18px;
+            color: #7f8c8d;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+        
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .show-entries select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .search-box input {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            width: 200px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .action-link {
+            color: #3498db;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        
+        .action-link:hover {
+            text-decoration: underline;
+        }
+        
+        .delete-link {
+            color: #e74c3c;
+        }
+        
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #666;
+        }
+        
+        .pagination {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .pagination button {
+            padding: 5px 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .pagination button:hover {
+            background-color: #e9ecef;
+        }
+        
+        .pagination button:disabled {
+            color: #aaa;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center display-3">Blog Categories</h1>
+        
+        <div class="table-controls">
+            <div class="show-entries">
+              <a href="{% url 'category-add' %}"><button type="button" class="btn btn-info">Create New Category</button></a>
+            </div>
+            <div class="search-box">
+                Search: <input type="text" id="search-input" placeholder="Search...">
+            </div>
+        </div>
+        
+        <table id="categories-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Slug</th>
+                    <th>Publish date</th>
+                    <th>Last modified</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for category in object_list %}
+                <tr>
+                    <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                    <td>{{ category.name }}</td>
+                    <td>{{ category.slug }}</td>
+                    <td>{{ category.publish_date|date:"M. d, Y" }}</td>
+                    <td>{{ category.update_date|date:"M. d, Y" }}</td>
+                    <td><a href="{% url 'category-edit' category.pk %}" class="action-link"><button type="button" class="btn btn-success">Edit</button></a></td>
+                    <td><a href="{% url 'category-delete' category.pk %}" class="action-link"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="table-footer">
+            <div class="showing-entries">
+                Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries
+            </div>
+            <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link">Previous</a>
+            {% else %}
+                <span class="page-link disabled">Previous</span>
+            {% endif %}
+            
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link">Next</a>
+            {% else %}
+                <span class="page-link disabled">Next</span>
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            const tableBody = document.querySelector('#categories-table tbody');
+            const rows = Array.from(tableBody.querySelectorAll('tr'));
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    let rowMatches = false;
+                    
+                    // Skip the first cell (index) and last two cells (actions)
+                    for (let i = 1; i < cells.length - 2; i++) {
+                        if (cells[i].textContent.toLowerCase().includes(searchTerm)) {
+                            rowMatches = true;
+                            break;
+                        }
+                    }
+                    
+                    row.style.display = rowMatches ? '' : 'none';
+                });
+                
+                updateEntryCount();
+            });
+            
+            
+        });
+    </script>
+</body>
+</html>
+
+{% endblock %}

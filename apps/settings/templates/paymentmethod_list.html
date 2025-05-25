@@ -1,0 +1,141 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Payment Methods Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Payment Methods Dashboard</h5>
+        <a href="{% url 'add_payment_method' %}" class="btn btn-primary">
+          <i class="fas fa-plus me-2"></i>Add New Payment Method
+        </a>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info" role="alert">
+          <i class="fas fa-credit-card me-2"></i> Manage all payment gateway integrations from this dashboard.
+        </div>
+
+        <div class="row">
+          <!-- PayPal Card -->
+          {% for method in payment_methods %}
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4
+              {% if method.name == 'paypal' %}border-start-primary
+              {% elif method.name == 'stripe' %}border-start-success
+              {% elif method.name == 'sslcommerz' %}border-start-info
+              {% elif method.name == 'instamojo' %}border-start-warning
+              {% elif method.name == 'paymob' %}border-start-danger
+              {% else %}border-start-secondary{% endif %}">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle
+                      {% if method.name == 'paypal' %}bg-label-primary
+                      {% elif method.name == 'stripe' %}bg-label-success
+                      {% elif method.name == 'sslcommerz' %}bg-label-info
+                      {% elif method.name == 'instamojo' %}bg-label-warning
+                      {% elif method.name == 'paymob' %}bg-label-danger
+                      {% else %}bg-label-secondary{% endif %}">
+                      <i class="fab fa-cc-{{ method.name }}"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">{{ method.get_name_display }}</h5>
+                    <small class="text-muted">
+                      {% if method.sandbox %}Sandbox Mode{% else %}Live Mode{% endif %}
+                      <span class="badge {% if method.active %}bg-label-success{% else %}bg-label-secondary{% endif %} ms-2">
+                        {% if method.active %}Active{% else %}Inactive{% endif %}
+                      </span>
+                    </small>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <small class="text-muted">Configuration:</small>
+                  <div class="config-preview">
+                    {% for key, value in method.config.items %}
+                      <div class="d-flex justify-content-between small py-1">
+                        <span class="text-muted">{{ key }}:</span>
+                        <span class="text-truncate" style="max-width: 120px;">{{ value|truncatechars:15 }}</span>
+                      </div>
+                    {% empty %}
+                      <div class="text-muted small">No configuration set</div>
+                    {% endfor %}
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between gap-2">
+                  <a href="{% url 'update_payment_method' method.id %}" class="btn btn-outline-primary btn-sm flex-grow-1">
+                    <i class="fas fa-edit me-1"></i>Edit
+                  </a>
+                  <form method="post" action="{% url 'toggle_payment_method' method.id %}" style="display:inline;">
+                      {% csrf_token %}
+                      <button class="btn btn-sm flex-grow-1
+                                    {% if method.active %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+                          {% if method.active %}
+                              <i class="fas fa-toggle-off me-1"></i>Deactivate
+                          {% else %}
+                              <i class="fas fa-toggle-on me-1"></i>Activate
+                          {% endif %}
+                      </button>
+                  </form>
+
+                  <button type="button" class="btn btn-outline-danger btn-sm flex-grow-1"
+                    data-bs-toggle="modal" data-bs-target="#deleteModal{{ method.id }}">
+                    <i class="fas fa-trash-alt me-1"></i>Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Delete Confirmation Modal -->
+          <div class="modal fade" id="deleteModal{{ method.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Confirm Deletion</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to delete the {{ method.get_name_display }} payment method?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <form method="post" action="{% url 'delete_payment_method' method.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="col-12 text-center py-5">
+            <div class="alert alert-warning">
+              <i class="fas fa-exclamation-circle me-2"></i> No payment methods configured yet.
+            </div>
+            <a href="{% url 'add_payment_method' %}" class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i>Add Your First Payment Method
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="mt-4 pt-3 border-top">
+          <div class="alert alert-light" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Remember to test your payment methods after configuration.
+            {% if sandbox_enabled %}Sandbox mode is currently enabled globally.{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

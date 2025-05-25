@@ -1,0 +1,190 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Footer Settings Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12">
+    <div class="card mb-4">
+      <h5 class="card-header">Footer Settings Dashboard</h5>
+      <div class="card-body">
+        <div class="alert alert-info" role="alert">
+          <i class="fas fa-shoe-prints me-2"></i> Manage all footer settings from this centralized dashboard.
+        </div>
+
+        <div class="row">
+          <!-- Footer Layout -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-primary">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-primary">
+                      <i class="fas fa-layer-group"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Footer Layout</h5>
+                    <small class="text-muted">Structure & Organization</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure the overall footer structure and layout options.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'footer_layout' %}" class="btn btn-outline-primary">Manage Layouts</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Top Section -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-success">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-success">
+                      <i class="fas fa-arrow-up"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Top Section</h5>
+                    <small class="text-muted">Call-to-action & Promotional</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure the top section with subtitle, title, and button.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'footer_top' %}" class="btn btn-outline-success">Manage Top Section</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-info">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-info">
+                      <i class="fas fa-share-alt"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Social Links</h5>
+                    <small class="text-muted">Connect with Social Media</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure all social media links displayed in the footer.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'footer_social_licks' %}" class="btn btn-outline-info">Manage Social Links</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subscribe Form -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-warning">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-warning">
+                      <i class="fas fa-envelope"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Subscribe Form</h5>
+                    <small class="text-muted">Newsletter Subscription</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure the newsletter subscription form in the footer.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'footer_subscribe_form' %}" class="btn btn-outline-warning">Manage Subscribe Form</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Columns -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-danger">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-danger">
+                      <i class="fas fa-columns"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Footer Columns</h5>
+                    <small class="text-muted">Navigation & Content</small>
+                  </div>
+                </div>
+                <p class="card-text">Manage the content and links in footer columns.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'footer_column' %}" class="btn btn-outline-danger">Manage Columns</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Bottom -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-dark">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-dark">
+                      <i class="fas fa-arrow-down"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Bottom Section</h5>
+                    <small class="text-muted">Additional Content</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure the bottom section with multiple columns.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'footer_bottom' %}" class="btn btn-outline-dark">Manage Bottom Section</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Copyright Section -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-secondary">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-secondary">
+                      <i class="fas fa-copyright"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Copyright Section</h5>
+                    <small class="text-muted">Legal & Policy Links</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure copyright text and policy links.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'footer_copyrights' %}" class="btn btn-outline-secondary">Manage Copyright</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-top">
+          <div class="alert alert-light" role="alert">
+            <i class="fas fa-info-circle me-2"></i> Changes to footer settings may require clearing cache to take effect.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

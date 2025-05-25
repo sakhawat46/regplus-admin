@@ -1,0 +1,106 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}{{ service.title }} Details{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Service Details</h5>
+        <div>
+          <a href="{% url 'update_service' service.id %}" class="btn btn-outline-primary me-2">
+            <i class="fas fa-edit me-1"></i>Edit
+          </a>
+          <a href="{% url 'service_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Back to Services
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <!-- Service Image -->
+          <div class="col-md-4 mb-4 mb-md-0">
+            <div class="card h-100">
+              <div class="card-body text-center p-4">
+                <img src="{{ service.image.url }}" alt="{{ service.title }}" class="img-fluid rounded" style="max-height: 300px; width: auto;">
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Details -->
+          <div class="col-md-8">
+            <div class="card h-100">
+              <div class="card-body">
+                <h3 class="mb-3">{{ service.title }}</h3>
+
+                <div class="d-flex align-items-center mb-4">
+                  <span class="badge bg-label-primary me-2">
+                    <i class="fas fa-sort-numeric-up me-1"></i>
+                    Display Order: {{ service.service_showing_order }}
+                  </span>
+                </div>
+
+                <div class="mb-4">
+                  <h5 class="mb-2">Description</h5>
+                  <div class="border rounded p-3 bg-light">
+                    {{ service.description|linebreaks }}
+                  </div>
+                </div>
+
+                <div class="border-top pt-3 mt-3">
+                  <div class="row">
+                    <div class="col-6">
+                      <small class="text-muted">Created:</small>
+                      <p class="mb-0">{{ service.created_at|date:"M d, Y" }}</p>
+                    </div>
+                    <div class="col-6">
+                      <small class="text-muted">Last Updated:</small>
+                      <p class="mb-0">{{ service.updated_at|date:"M d, Y" }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-4 pt-3 border-top text-center">
+          <a href="{% url 'update_service' service.id %}" class="btn btn-primary me-2">
+            <i class="fas fa-edit me-1"></i>Edit Service
+          </a>
+          <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+            <i class="fas fa-trash-alt me-1"></i>Delete Service
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete the "{{ service.title }}" service? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form method="post" action="{% url 'delete_service' service.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

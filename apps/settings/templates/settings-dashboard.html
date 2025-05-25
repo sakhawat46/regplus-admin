@@ -1,0 +1,170 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}Settings Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12">
+    <div class="card mb-4">
+      <h5 class="card-header">Application Settings Dashboard</h5>
+      <div class="card-body">
+        <div class="alert alert-info" role="alert">
+          <i class="fas fa-cog me-2"></i> Manage all application settings from this centralized dashboard.
+        </div>
+
+        <div class="row">
+          <!-- Branding Settings -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-primary">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-primary">
+                      <i class="fas fa-image"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Branding Settings</h5>
+                    <small class="text-muted">Logos, Favicon, Colors</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure application logos, favicon, and color schemes.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'logo_settings' %}" class="btn btn-outline-primary">Logo Settings</a>
+                  <a href="{% url 'color_settings' %}" class="btn btn-outline-primary">Color Settings</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- General Settings -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-success">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-success">
+                      <i class="fas fa-cogs"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">General Settings</h5>
+                    <small class="text-muted">Application Configuration</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure application name, default settings, and features.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'general_settings' %}" class="btn btn-outline-success">General Settings</a>
+                  <a href="{% url 'other_settings' %}" class="btn btn-outline-success">Other Settings</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Settings -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-info">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-info">
+                      <i class="fas fa-address-book"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Contact Settings</h5>
+                    <small class="text-muted">Company Information</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure contact details, address, and communication settings.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'contact_settings' %}" class="btn btn-outline-info">Contact Settings</a>
+                  <a href="{% url 'sms_settings' %}" class="btn btn-outline-info">SMS Settings</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Financial Settings -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-warning">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-warning">
+                      <i class="fas fa-money-bill-wave"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Financial Settings</h5>
+                    <small class="text-muted">Currency & Payments</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure currency, payment settings, and invoicing.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'currency_settings' %}" class="btn btn-outline-warning">Currency Settings</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HRM Settings -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-danger">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-danger">
+                      <i class="fas fa-users"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">HRM Settings</h5>
+                    <small class="text-muted">Human Resources</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure attendance, leave, and HR policies.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'hrm_settings' %}" class="btn btn-outline-danger">HRM Settings</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Settings -->
+          <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-start border-start-4 border-start-dark">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <div class="avatar avatar-md me-3">
+                    <span class="avatar-initial rounded-circle bg-label-dark">
+                      <i class="fas fa-share-alt"></i>
+                    </span>
+                  </div>
+                  <div>
+                    <h5 class="mb-0">Social Settings</h5>
+                    <small class="text-muted">Integrations</small>
+                  </div>
+                </div>
+                <p class="card-text">Configure social media, analytics, and chat integrations.</p>
+                <div class="d-grid gap-2">
+                  <a href="{% url 'social_settings' %}" class="btn btn-outline-dark">Social Settings</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-top">
+          <div class="alert alert-light" role="alert">
+            <i class="fas fa-info-circle me-2"></i> Changes to settings may require a page refresh to take effect.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

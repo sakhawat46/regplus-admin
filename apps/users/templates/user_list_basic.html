@@ -1,0 +1,275 @@
+{% extends layout_path %}
+
+{% load static %}
+{% load i18n %}
+
+{% block title %}User list Table{% endblock %}
+
+{% block content %}
+
+<!-- Hoverable Table rows -->
+<div class="card">
+  <h5 class="card-header d-flex justify-content-between align-items-center">
+    <span>User Management</span>
+    <div class="d-flex align-items-center">
+      <div class="input-group input-group-merge me-3" style="width: 250px;">
+        <span class="input-group-text"><i class="bx bx-search"></i></span>
+        <input type="text" id="userSearch" class="form-control" placeholder="Search users..." aria-label="Search users">
+      </div>
+      <a href="{% url 'user-create' %}" class="btn btn-primary btn-sm">
+        <i class="bx bx-plus me-1"></i>Add New User
+      </a>
+    </div>
+  </h5>
+  <div class="table-responsive text-nowrap">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Profile Picture</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0" id="usersTableBody">
+        {% for user in users %}
+        <tr class="user-row">
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="avatar avatar-sm me-">
+                <span class="avatar-initial rounded-circle bg-label-primary">
+                  <img src="{% if user.avatar.avatar %}{{user.avatar.avatar.url}}{% else %}{% static 'img/avatars/5.png' %}{% endif %}"
+                       alt="Avatar"
+                       class="rounded-circle"
+                       style="width: 40px; height: 40px; object-fit: cover;">
+                </span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span>{{user.first_name}} {{user.last_name}}</span>
+          </td>
+          <td>{{user.email}}</td>
+          <td>{{user.username}}</td>
+          <td><span class="badge bg-label-primary me-1">{{user.user_type|upper}}</span></td>
+          <td>
+            <div class="dropdown">
+              <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'user-update' user.pk %}">
+                  <i class="bx bx-edit-alt me-1"></i> Edit
+                </a>
+                <a class="dropdown-item" href="{% url 'user_delete' user.pk %}">
+                  <i class="bx bx-trash me-1"></i> Delete
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center py-4">
+            <a href="{% url 'user-create' %}" class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i>Add Your First User
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="dataTables_info" role="status" aria-live="polite">
+                Showing {{ users.start_index }} to {{ users.end_index }} of {{ users.paginator.count }} entries
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="dataTables_paginate paging_simple_numbers">
+                <ul class="pagination justify-content-end">
+                    {% if users.has_previous %}
+                        <li class="paginate_button page-item previous">
+                            <a href="?page=1" class="page-link">&laquo; First</a>
+                        </li>
+                        <li class="paginate_button page-item">
+                            <a href="?page={{ users.previous_page_number }}" class="page-link">Previous</a>
+                        </li>
+                    {% else %}
+                        <li class="paginate_button page-item previous disabled">
+                            <a href="#" class="page-link">&laquo; First</a>
+                        </li>
+                        <li class="paginate_button page-item disabled">
+                            <a href="#" class="page-link">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in users.paginator.page_range %}
+                        {% if users.number == num %}
+                            <li class="paginate_button page-item active">
+                                <a href="#" class="page-link">{{ num }}</a>
+                            </li>
+                        {% elif num > users.number|add:'-3' and num < users.number|add:'3' %}
+                            <li class="paginate_button page-item">
+                                <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if users.has_next %}
+                        <li class="paginate_button page-item">
+                            <a href="?page={{ users.next_page_number }}" class="page-link">Next</a>
+                        </li>
+                        <li class="paginate_button page-item next">
+                            <a href="?page={{ users.paginator.num_pages }}" class="page-link">Last &raquo;</a>
+                        </li>
+                    {% else %}
+                        <li class="paginate_button page-item disabled">
+                            <a href="#" class="page-link">Next</a>
+                        </li>
+                        <li class="paginate_button page-item next disabled">
+                            <a href="#" class="page-link">Last &raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+<!--/ Hoverable Table rows -->
+
+<!-- Include inside <body> -->
+<div id="popup-messages" class="popup-messages-container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="popup-message {{ message.tags }}">
+                {{ message }}
+                <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<style>
+.popup-messages-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.popup-message {
+    background-color: #f44336; /* Default red background */
+    color: white;
+    padding: 16px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    min-width: 250px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
+    animation: fadein 0.5s, fadeout 0.5s 4.5s;
+}
+
+.popup-message.success { background-color: #4CAF50; }
+.popup-message.info { background-color: #2196F3; }
+.popup-message.warning { background-color: #ff9800; }
+.popup-message.error { background-color: #f44336; }
+
+.popup-message .close-btn {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+@keyframes fadein {
+    from { top: 0; opacity: 0; }
+    to { top: 20px; opacity: 1; }
+}
+
+@keyframes fadeout {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+/* Search and no results styles */
+.no-results {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+.input-group-merge .input-group-text {
+    z-index: 1;
+}
+</style>
+
+<script>
+    // Auto-hide messages after 5 seconds
+    setTimeout(() => {
+        document.querySelectorAll('.popup-message').forEach(msg => {
+            msg.style.display = 'none';
+        });
+    }, 5000);
+
+    // Search functionality for users
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('userSearch');
+        const usersTableBody = document.getElementById('usersTableBody');
+        const userRows = document.querySelectorAll('.user-row');
+
+        // Create no results message if it doesn't exist
+        if (!document.querySelector('.no-results')) {
+            const noResults = document.createElement('tr');
+            noResults.className = 'no-results';
+            noResults.innerHTML = `
+                <td colspan="6">
+                    <div class="d-flex flex-column align-items-center py-4">
+                        <i class="bx bx-search-alt bx-lg mb-2" style="color: #6c757d;"></i>
+                        <p class="mb-0">No users found matching your search</p>
+                    </div>
+                </td>
+            `;
+            usersTableBody.appendChild(noResults);
+        }
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            let hasResults = false;
+
+            userRows.forEach(row => {
+                const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const email = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const username = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+                const role = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+
+                if (name.includes(searchTerm) ||
+                    email.includes(searchTerm) ||
+                    username.includes(searchTerm) ||
+                    role.includes(searchTerm)) {
+                    row.style.display = '';
+                    hasResults = true;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            const noResults = document.querySelector('.no-results');
+            if (hasResults || searchTerm === '') {
+                noResults.style.display = 'none';
+            } else {
+                noResults.style.display = '';
+            }
+        });
+    });
+</script>
+
+{% endblock %}
