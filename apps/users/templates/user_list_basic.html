@@ -49,11 +49,11 @@
             </div>
           </td>
           <td>
-            <span>{{user.first_name}} {{user.last_name}}</span>
+            <span>{{user.profile.first_name|default:"-"}} {{user.profile.last_name|default:"-"}}</span>
           </td>
           <td>{{user.email}}</td>
-          <td>{{user.username}}</td>
-          <td><span class="badge bg-label-primary me-1">{{user.user_type|upper}}</span></td>
+          <td>{{user.profile.username|default:"-"}}</td>
+          <td><span class="badge bg-label-primary me-1">{{ user.get_user_type_display }}</span></td>
           <td>
             <div class="dropdown">
               <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

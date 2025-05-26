@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from web_project import TemplateLayout
 from django.utils.decorators import method_decorator
-from apps.authentication.middlewares import AdminRequiredMixin
+# from apps.authentication.middlewares import AdminRequiredMixin
 
 
 """
@@ -11,7 +11,7 @@ Refer to dashboards/urls.py file for more pages.
 """
 
 # @method_decorator(admin_required, name='dispatch')
-class DashboardsView(TemplateView, AdminRequiredMixin):
+class DashboardsView(TemplateView):
     # Predefined function
     def get_context_data(self, **kwargs):
         # A function to init the global layout. It is defined in web_project/__init__.py file
