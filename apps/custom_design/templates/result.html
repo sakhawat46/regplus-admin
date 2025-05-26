@@ -1,0 +1,8 @@
+<!-- templates/survey/result.html -->
+<h2>Your Survey Results</h2>
+
+<ul>
+  {% for question, answer in answers.items %}
+    <li><strong>{{ question }}</strong>: {{ answer }}</li>
+  {% endfor %}
+</ul>

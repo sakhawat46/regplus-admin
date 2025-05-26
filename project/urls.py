@@ -46,6 +46,10 @@ urlpatterns = [
 
     # Services urls
     path("", include("apps.services.urls")),
+
+
+    #servey,heru,card
+    path("", include("apps.custom_design.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

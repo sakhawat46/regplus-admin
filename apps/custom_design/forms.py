@@ -1,0 +1,41 @@
+from django import forms
+from .models import SurveyQuestion, SurveyOption,MainModel
+from django.forms.models import inlineformset_factory
+
+class SurveyQuestionForm(forms.ModelForm):
+    class Meta:
+        model = SurveyQuestion
+        fields = ['question_text', 'order']
+
+SurveyOptionFormSet = inlineformset_factory(
+    SurveyQuestion,
+    SurveyOption,
+    fields=('option_text',),
+    extra=4,
+    can_delete=True
+)
+
+
+class AboutUsForm(forms.ModelForm):
+    class Meta:
+        model = MainModel
+        fields = ['title', 'files', 'subtitle', 'description','page_section','page_name']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'files': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'subtitle': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'page_section': forms.Select(attrs={'class': 'form-control'}),
+            'page_name': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+
+
+class HeruSectionForm(forms.ModelForm):
+    class Meta:
+        model = MainModel
+        fields=['title', 'files']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'files': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }

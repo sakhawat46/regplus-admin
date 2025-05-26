@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.settings",
     "apps.services",
+    "apps.custom_design",
 
 
     "ckeditor",
