@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import SurveyQuestion, SurveyOption
-
+from .models import SurveyQuestion, SurveyOption,MainModel
+admin.site.register(MainModel)
 # Inline form for options inside the question form
 class SurveyOptionInline(admin.TabularInline):
     model = SurveyOption

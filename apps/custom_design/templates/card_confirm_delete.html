@@ -1,0 +1,42 @@
+{% extends layout_path %}
+{% load widget_tweaks %}
+
+{% block content %}
+<style>
+    .card {
+        background-color: #fff;
+        color: #000;
+        border-radius: 1rem;
+    }
+    .form-control, .form-select {
+        background-color: #fff;
+        color: #000;
+        border-color: #ccc;
+    }
+    .form-control:focus {
+        border-color: #999;
+        box-shadow: none;
+    }
+    label {
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+    }
+    .btn-primary {
+        background-color: #000;
+        color: #fff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #333;
+        color: #fff;
+    }
+</style>
+<h1>Delete Card</h1>
+<p>Are you sure you want to delete <strong>{{ object.title }}</strong>?</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Confirm</button>
+  <a href="{% url 'manage_cards' %}">Cancel</a>
+</form>
+{% endblock %}

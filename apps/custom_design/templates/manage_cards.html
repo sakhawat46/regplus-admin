@@ -1,0 +1,50 @@
+{% extends layout_path %}
+{% load widget_tweaks %}
+
+{% block content %}
+<style>
+    .card {
+        background-color: #fff;
+        color: #000;
+        border-radius: 1rem;
+    }
+    .form-control, .form-select {
+        background-color: #fff;
+        color: #000;
+        border-color: #ccc;
+    }
+    .form-control:focus {
+        border-color: #999;
+        box-shadow: none;
+    }
+    label {
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+    }
+    .btn-primary {
+        background-color: #000;
+        color: #fff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #333;
+        color: #fff;
+    }
+</style>
+<h1>Manage Homepage Cards</h1>
+<a href="{% url 'add_card' %}">+ Add New Card</a>
+
+<ul>
+  {% for card in cards %}
+    <li>
+      {% if card.logo %}<img src="{{ card.logo.url }}" width="50">{% endif %}
+      <strong>{{ card.title }}</strong><br>
+      {{ card.description }}<br>
+      <a href="{% url 'edit_card' card.pk %}">Edit</a> |
+      <a href="{% url 'delete_card' card.pk %}">Delete</a>
+    </li>
+  {% empty %}
+    <li>No cards yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

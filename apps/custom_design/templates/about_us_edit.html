@@ -1,6 +1,6 @@
 {% extends layout_path %}
 {% load widget_tweaks %}
-
+{% load static %}
 {% block content %}
 <style>
     .card {
@@ -51,9 +51,11 @@
                             {% if field.errors %}
                                 <small class="text-danger d-block mt-1">{{ field.errors|striptags }}</small>
                             {% endif %}
+                           
                         </div>
                     </div>
                 {% endfor %}
+                 {{ form.media }}
             </div>
 
             <div class="d-flex justify-content-end mt-4">

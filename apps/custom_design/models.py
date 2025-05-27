@@ -17,11 +17,12 @@
     
 
 from django.db import models
-
+from ckeditor.fields import RichTextField
 PAGE_CHOICES = [
     ('home', 'Home'),
     ('about', 'About'),
     ('survey', 'Survey'),
+    ('train&FAQ', 'Train&FAQ'),
 
 ]
 
@@ -30,16 +31,21 @@ SECTION_CHOICES = [
     ('middle','moddle'),
     ('card','card'),
     ('intro', 'Introduction'),
-    # Add more sections
+    ('down', 'Down'),
+    
 ]
 
 class MainModel(models.Model):
     title = models.CharField(max_length=200)
     files = models.FileField(upload_to='uploads/', blank=True, null=True)
     subtitle = models.CharField(max_length=200, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
+    description = RichTextField(blank=True, null=True)
     page_section = models.CharField(max_length=50, choices=SECTION_CHOICES)
     page_name = models.CharField(max_length=50, choices=PAGE_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True,blank=True, null=True)
+    class Meta:
+        ordering = ['-created_at']  # Order by creation date, newest first
 
     def __str__(self):
         return f"{self.page_name} - {self.page_section}: {self.title}"
@@ -48,7 +54,7 @@ class MainModel(models.Model):
 
 
 class SurveyQuestion(models.Model):
-    question_text = models.TextField()
+    question_text = RichTextField()
     order = models.PositiveIntegerField(default=0)  # To control question order
 
     def __str__(self):
