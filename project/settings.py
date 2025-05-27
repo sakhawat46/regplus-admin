@@ -59,8 +59,8 @@ INSTALLED_APPS = [
     
     "apps.dashboards",
     "apps.authentication",
-    "apps.blogs",
     "apps.users",
+    "apps.blogs",
     "apps.settings",
     "apps.services",
 
@@ -69,14 +69,32 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'rest_framework',
+    'rest_framework_simplejwt',
     'widget_tweaks',
 ]
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     ),
+# }
+
+
+# Rest framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+
+import datetime
+
+SIMPLE_JWT = {
+     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
+     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
+}
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -118,7 +136,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "project.wsgi.application"
-AUTH_USER_MODEL = 'authentication.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -129,6 +147,7 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
 
 
 # Password validation

@@ -32,14 +32,12 @@ urlpatterns = [
 
     # Auth urls
     path("", include("apps.authentication.urls")),
+    
+    # Users urls
+    path("", include("apps.users.urls")),
 
     #Blog urls
     path('', include('apps.blogs.urls')),
-
-
-    #sifat
-    # User urls
-    path("", include("apps.users.urls")),
 
     # Settings urls
     path("", include("apps.settings.urls")),
