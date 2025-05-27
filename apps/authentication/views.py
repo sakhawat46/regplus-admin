@@ -64,15 +64,6 @@ class LoginView(AuthView):
 
         user = authenticate(request=request, email=email, password=password)
 
-        # Try fallback if user not found using email
-        if user is None:
-            try:
-                temp_user = User.objects.filter(username=email).first()
-                if temp_user:
-                    user = authenticate(request=request, email=temp_user.email, password=password)
-            except User.DoesNotExist:
-                pass
-
         # If authentication failed
         if user is None:
             context = self.get_context_data()
@@ -99,6 +90,35 @@ class LogOutView(View, LoginRequiredMixin):
 
     def post(self, request):
         return self.get(request)
+
+
+
+class SignUpView(AuthView):
+    template_name = 'auth_register_basic.html'
+
+    def post(self, request, *args, **kwargs):
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        password = request.POST.get('password1')
+        confirm_password = request.POST.get('password2')
+
+        if password != confirm_password:
+            context = self.get_context_data()
+            context["error"] = "Password and Confirm password is Invalid."
+            return self.render_to_response(context)
+
+        if User.objects.filter(email=email).exists():
+            context = self.get_context_data()
+            context["error"] = "Email is already in use."
+            return self.render_to_response(context)
+
+        user = User.objects.create_user(email=email, password=password)
+        user.first_name=first_name
+        user.last_name=last_name
+        user.save()
+        return redirect('auth-login-basic')
 
 
 

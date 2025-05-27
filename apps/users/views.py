@@ -7,11 +7,12 @@ from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.views.generic import CreateView,UpdateView
 from .forms import UserCreateForm, UserUpdateForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 User = get_user_model()
 
 
-class UserView(TemplateView):
+class UserView(LoginRequiredMixin, TemplateView):
     # Predefined function
     def get_context_data(self, **kwargs):
         # A function to init the global layout. It is defined in web_project/__init__.py file
