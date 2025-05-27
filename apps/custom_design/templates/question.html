@@ -1,0 +1,14 @@
+<!-- templates/survey/question.html -->
+<h2>Question {{ question.order }}</h2>
+<p>{{ question.question_text }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  {% for option in question.options.all %}
+    <div>
+      <input type="radio" name="option" value="{{ option.id }}" required>
+      {{ option.option_text }}
+    </div>
+  {% endfor %}
+  <button type="submit">Next</button>
+</form>

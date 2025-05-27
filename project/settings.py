@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     "apps.blogs",
     "apps.settings",
     "apps.services",
+    "apps.custom_design",
 
 
     "ckeditor",
@@ -230,3 +231,21 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'sifatali360@gmail.com'
 EMAIL_HOST_PASSWORD = 'huhe rrbm klcz nfdv'
+
+
+
+
+# CKEditor Settings
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
+CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js' 
+CKEDITOR_CONFIGS = {
+    'default':
+        {
+            'toolbar': 'full',
+            'width': 'auto',
+            'extraPlugins': ','.join([
+                'codesnippet',
+            ]),
+        },
+}
