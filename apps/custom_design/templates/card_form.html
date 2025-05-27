@@ -1,0 +1,42 @@
+{% extends layout_path %}
+{% load widget_tweaks %}
+{% load static %}
+{% block content %}
+<style>
+    .card {
+        background-color: #fff;
+        color: #000;
+        border-radius: 1rem;
+    }
+    .form-control, .form-select {
+        background-color: #fff;
+        color: #000;
+        border-color: #ccc;
+    }
+    .form-control:focus {
+        border-color: #999;
+        box-shadow: none;
+    }
+    label {
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+    }
+    .btn-primary {
+        background-color: #000;
+        color: #fff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #333;
+        color: #fff;
+    }
+</style>
+<h1>{{ action }} Card</h1>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {{ form.media }}
+  <button type="submit">{{ action }}</button>
+</form>
+<a href="{% url 'manage_cards' %}">Back</a>
+{% endblock %}

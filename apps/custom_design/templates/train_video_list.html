@@ -1,0 +1,63 @@
+{% extends layout_path %}
+{% load widget_tweaks %}
+{% load static %}
+{% block content %}
+<style>
+    .card {
+        background-color: #fff;
+        color: #000;
+        border-radius: 1rem;
+    }
+    .form-control, .form-select {
+        background-color: #fff;
+        color: #000;
+        border-color: #ccc;
+    }
+    .form-control:focus {
+        border-color: #999;
+        box-shadow: none;
+    }
+    label {
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+    }
+    .btn-primary {
+        background-color: #000;
+        color: #fff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #333;
+        color: #fff;
+    }
+</style>
+<h2>Train Videos</h2>
+<a href="{% url 'train_video_add' %}" class="btn btn-primary">Add Video</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>File</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for video in videos %}
+        <tr>
+            <td>{{ video.title }}</td>
+            <td>
+                {% if video.files %}
+                    <a href="{{ video.files.url }}">Download</a>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'train_video_edit' video.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                <a href="{% url 'train_video_delete' video.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No videos found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

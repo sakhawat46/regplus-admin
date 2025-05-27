@@ -27,6 +27,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     path("admin/", admin.site.urls),
 
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+
     # Dashboard urls
     path("", include("apps.dashboards.urls")),
 
@@ -44,6 +46,10 @@ urlpatterns = [
 
     # Services urls
     path("", include("apps.services.urls")),
+
+
+    #servey,heru,card
+    path("", include("apps.custom_design.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
@@ -52,3 +58,6 @@ urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 handler404 = SystemView.as_view(template_name="pages_misc_error.html", status=404)
 handler400 = SystemView.as_view(template_name="pages_misc_error.html", status=400)
 handler500 = SystemView.as_view(template_name="pages_misc_error.html", status=500)
+if settings.DEBUG:
+    urlpatterns+=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
