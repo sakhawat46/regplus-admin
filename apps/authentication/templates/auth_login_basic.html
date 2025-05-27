@@ -42,8 +42,8 @@
           <form id="formAuthentication" class="mb-6" method="POST">
             {% csrf_token %}
             <div class="mb-6">
-              <label for="email" class="form-label">Email or Username</label>
-              <input value="{{ email }}" type="text" class="form-control" id="email" name="email" placeholder="Enter your email or username" autofocus required autocomplete="off">
+              <label for="email" class="form-label">Email</label>
+              <input value="{{ email }}" type="text" class="form-control" id="email" name="email" placeholder="Enter your email" autofocus required autocomplete="off">
 
             </div>
             <div class="mb-6 form-password-toggle">

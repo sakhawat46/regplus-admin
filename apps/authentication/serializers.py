@@ -26,11 +26,11 @@ class LoginSerializer(serializers.Serializer):
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ['avatar', 'username', 'first_name', 'last_name', 'phone_number']
+        fields = ['avatar', 'name', 'family_name', 'company_name', 'job_title']
         extra_kwargs = {
-            'username': {'required': False},
-            'first_name': {'required': False},
-            'last_name': {'required': False},
+            'name': {'required': False},
+            'family_name': {'required': False},
+            'company_name': {'required': False},
             'avatar': {'required': False},
         }
 
@@ -86,10 +86,10 @@ class UserSerializer(serializers.ModelSerializer):
             Profile.objects.create(
                 user=user,
                 avatar=profile_data.get('avatar'),
-                username=profile_data.get('username'),
-                first_name=profile_data.get('first_name'),
-                last_name=profile_data.get('last_name'),
-                phone_number=profile_data.get('phone_number')
+                name=profile_data.get('name'),
+                family_name=profile_data.get('family_name'),
+                company_name=profile_data.get('company_name'),
+                job_title=profile_data.get('job_title')
             )
 
         return user
@@ -110,10 +110,10 @@ class UserSerializer(serializers.ModelSerializer):
         if profile_data:
             profile = instance.profile
             profile.avatar = profile_data.get('avatar', profile.avatar)
-            profile.username = profile_data.get('username', profile.username)
-            profile.first_name = profile_data.get('first_name', profile.first_name)
-            profile.last_name = profile_data.get('last_name', profile.last_name)
-            profile.phone_number = profile_data.get('phone_number', profile.phone_number)
+            profile.name = profile_data.get('name', profile.name)
+            profile.family_name = profile_data.get('family_name', profile.family_name)
+            profile.company_name = profile_data.get('company_name', profile.company_name)
+            profile.job_title = profile_data.get('job_title', profile.job_title)
             profile.save()
 
         return instance
