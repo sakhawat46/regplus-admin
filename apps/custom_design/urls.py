@@ -9,6 +9,7 @@ from .views import (
     TrainVideoUpdateView,
     TrainVideoDeleteView,
     FAQListView, FAQCreateView, FAQUpdateView, FAQDeleteView,
+    VideoViewApi,
     survey_question_view, survey_result_view,CustomAdminAboutUsView,CustomAdminHeruSection,CardListView,CardCreateView,CardUpdateView,CardDeleteView,CardViewApi,CustomAdminFooterUpeer
 )
 
@@ -47,4 +48,5 @@ urlpatterns = [
 
     # apis
     path('api/cards/', CardViewApi.as_view(), name='api_cards'),
+    path('api/videos/', VideoViewApi.as_view(), name='api_videos'),
 ]

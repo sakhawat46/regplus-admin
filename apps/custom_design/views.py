@@ -259,10 +259,13 @@ class CustomAdminFooterUpeer(View):
         context = TemplateLayout.init(self, context)
         return context
 
-
+from .serializers import VideoSerializer
 class CardViewApi(ListAPIView):
     queryset = MainModel.objects.filter(page_name='home', page_section='card')
     serializer_class = CardSerializer
+class VideoViewApi(ListAPIView):
+    queryset = MainModel.objects.filter(page_name='train&FAQ', page_section='hero')
+    serializer_class = VideoSerializer
 
 
 
@@ -394,3 +397,8 @@ class FAQDeleteView(DeleteView):
         context = super().get_context_data(**kwargs)
         context = TemplateLayout.init(self, context)
         return context
+    
+
+
+
+
