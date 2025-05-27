@@ -1,5 +1,4 @@
 from django.views.generic import TemplateView, View
-from django.contrib.auth.views import LogoutView
 from django.contrib.auth import logout
 from web_project import TemplateLayout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -19,11 +18,11 @@ from urllib.parse import urlencode
 from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 from rest_framework import permissions
-from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+from .serializers import UserSerializer, LoginSerializer
 from django.contrib import messages
 User = get_user_model()
 
@@ -101,37 +100,6 @@ class LogOutView(View, LoginRequiredMixin):
     def post(self, request):
         return self.get(request)
 
-
-
-
-
-
-class SignUpView(AuthView):
-    template_name = 'auth_register_basic.html'
-
-    def post(self, request, *args, **kwargs):
-        email = request.POST.get('email')
-        username = request.POST.get('username')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        password = request.POST.get('password1')
-        confirm_password = request.POST.get('password2')
-
-        if password != confirm_password:
-            context = self.get_context_data()
-            context["error"] = "Password and Confirm password is Invalid."
-            return self.render_to_response(context)
-
-        if User.objects.filter(email=email).exists():
-            context = self.get_context_data()
-            context["error"] = "Email is already in use."
-            return self.render_to_response(context)
-
-        user = User.objects.create_user(email=email, username=username, password=password)
-        user.first_name=first_name
-        user.last_name=last_name
-        user.save()
-        return redirect('auth-login-basic')
 
 
 class ForgetPasswordView(AuthView):
@@ -235,7 +203,7 @@ class CustomPasswordResetConfirmView(AuthView):
 
 
 class SignUpApiView(CreateAPIView):
-    serializer_class = RegisterSerializer
+    serializer_class = UserSerializer
 
 class LogInApiView(APIView):
     def post(self, request, *args, **kwargs):
@@ -248,7 +216,7 @@ class LogInApiView(APIView):
             'access': str(refresh.access_token),
         })
 
-class LogoutView(APIView):
+class LogOutApiView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -261,7 +229,7 @@ class LogoutView(APIView):
             return Response({"detail": str(e)}, status=400)
 
 
-class ProfileView(RetrieveAPIView):
+class ProfileApiView(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSerializer
 
