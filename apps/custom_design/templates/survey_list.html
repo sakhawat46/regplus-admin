@@ -1,5 +1,6 @@
 
 {% extends layout_path %}
+{% load static %}
 {% block content %}
   <meta charset="UTF-8">
   <title>Survey Questions</title>
@@ -22,7 +23,7 @@
 <div class="container mt-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Survey Questions</h2>
-    <a href="{% url 'survey_admin_add' %}" class="btn btn-success btn-add">+ Add Question</a>
+    <a href="{% url 'survey_admin_add' %}" class="btn btn-primary btn-add">Add New Question</a>
   </div>
 
   {% if questions %}
@@ -33,15 +34,19 @@
             <strong>{{ question.order }}.</strong> {{ question.question_text }}
           </div>
           <div class="action-links">
-            <a href="{% url 'survey_admin_edit' question.pk %}" class="btn btn-sm btn-primary">Edit</a>
-            <a href="{% url 'survey_admin_delete' question.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            <a href="{% url 'survey_admin_edit' question.pk %}" class="btn btn btn-success">Edit</a>
+            <a href="{% url 'survey_admin_delete' question.pk %}" class="btn btn btn-danger">Delete</a>
           </div>
         </div>
       {% endfor %}
     </div>
   {% else %}
-    <div class="alert alert-info">
+  <img src="{% static 'empty.jpg' %}" alt="No data" style="max-height: 500px; max-width: 500px;" class="justify-content-center d-block mx-auto mb-4">
+    <div class="alert alert-info text-center">
+      
+      
       No survey questions found. Click "Add Question" to get started.
+    
     </div>
   {% endif %}
 </div>

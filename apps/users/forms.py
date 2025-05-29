@@ -24,37 +24,38 @@ class UserCreateForm(forms.ModelForm):
             'accept': 'image/*'
         })
     )
-    username = forms.CharField(
+    name = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your username'
+            'placeholder': 'Enter your name'
         })
     )
-    first_name = forms.CharField(
+    family_name = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your first name'
+            'placeholder': 'Enter your family name'
         })
     )
-    last_name = forms.CharField(
+    company_name = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your last name'
+            'placeholder': 'Enter your company name'
         })
     )
-    phone_number = forms.CharField(
+    job_title = forms.CharField(
+        required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your phone number'
+            'placeholder': 'Enter your job title'
         })
     )
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name','email','username','phone_number','user_type','avatar','password', ]
+        fields = ['name', 'family_name','email','company_name','job_title','user_type','avatar','password', ]
 
 
         widgets = {
@@ -81,12 +82,6 @@ class UserCreateForm(forms.ModelForm):
             raise ValidationError("A user with this email already exists")
         return email
 
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-        if username:  # Only validate if username is provided (since it's optional)
-            if Profile.objects.filter(username=username).exists():
-                raise ValidationError("A user with this username already exists")
-        return username
 
 
     def save(self, commit=True):
@@ -98,10 +93,10 @@ class UserCreateForm(forms.ModelForm):
             # Create or update profile
             profile, created = Profile.objects.get_or_create(user=user)
             profile.avatar = self.cleaned_data.get('avatar')
-            profile.username = self.cleaned_data.get('username')
-            profile.first_name = self.cleaned_data.get('first_name')
-            profile.last_name = self.cleaned_data.get('last_name')
-            profile.phone_number = self.cleaned_data.get('phone_number')
+            profile.name = self.cleaned_data.get('name')
+            profile.family_name = self.cleaned_data.get('family_name')
+            profile.company_name = self.cleaned_data.get('company_name')
+            profile.job_title = self.cleaned_data.get('job_title')
             profile.save()
 
         return user
@@ -122,54 +117,55 @@ class UserUpdateForm(forms.ModelForm):
             'accept': 'image/*'
         })
     )
-    username = forms.CharField(
+    name = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your username'
+            'placeholder': 'Enter your name'
         })
     )
-    first_name = forms.CharField(
+    family_name = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your first name'
+            'placeholder': 'Enter your family name'
         })
     )
-    last_name = forms.CharField(
+    company_name = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your last name'
+            'placeholder': 'Enter your company name'
         })
     )
-    phone_number = forms.CharField(
+    job_title = forms.CharField(
+        required=False,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Enter your phone number'
+            'placeholder': 'Enter your job title'
         })
     )
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name','email','username','phone_number','user_type','avatar','password', ]
+        fields = ['family_name', 'company_name','email','name','job_title','user_type','avatar','password', ]
         widgets = {
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter your email',
                 'readonly': 'readonly'  # Make email read-only
             }),
-            'username': forms.TextInput(attrs={
+            'name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter your username'
+                'placeholder': 'Enter your name'
             }),
-            'first_name': forms.TextInput(attrs={
+            'family_name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter your first name'
+                'placeholder': 'Enter your family name'
             }),
-            'last_name': forms.TextInput(attrs={
+            'company_name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter your last name'
+                'placeholder': 'Enter your company name'
             }),
             'user_type': forms.Select(attrs={
                 'class': 'form-control',
@@ -178,9 +174,9 @@ class UserUpdateForm(forms.ModelForm):
 
         labels = {
             'email': 'Email Address',
-            'username': 'Username',
-            'first_name': 'First Name',
-            'last_name': 'Last Name',
+            'name': 'name',
+            'family_name': 'family name',
+            'company_name': 'company name',
             'user_type': 'User Type',
         }
 

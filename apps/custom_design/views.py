@@ -334,9 +334,11 @@ class TrainVideoDeleteView(DeleteView):
     
 
 
-
+from django.core.paginator import Paginator
 class FAQListView(View):
     template_name = 'faq_list.html'
+    faqs= MainModel.objects.filter(page_name='train&FAQ', page_section='down')
+    paginate_by = 5
 
     def get(self, request):
         faqs = MainModel.objects.filter(page_name='train&FAQ', page_section='down')

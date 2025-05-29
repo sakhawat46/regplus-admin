@@ -36,7 +36,7 @@
   {% csrf_token %}
   {{ form.as_p }}
   {{ form.media }}
-  <button type="submit">{{ action }}</button>
+  <button type="submit" class="btn-primary m-2">{{ action }}</button>
 </form>
-<a href="{% url 'manage_cards' %}">Back</a>
+<a href="{% url 'manage_cards' %}" class="m-2">Back</a>
 {% endblock %}

@@ -1,4 +1,6 @@
 venv/
+db.sqlite3
+*.sqlite3
 
 # # Ignoring src and assets folders
 
