@@ -1,0 +1,35 @@
+<!-- templates/chatbot/chat.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Gemini Chatbot</h1>
+    
+    <div class="card mb-4">
+        <div class="card-body" style="height: 400px; overflow-y: auto;">
+            {% for chat in chats reversed %}
+                <div class="mb-3">
+                    <div class="d-flex justify-content-end mb-2">
+                        <div class="bg-primary text-white p-3 rounded" style="max-width: 70%;">
+                            {{ chat.message }}
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start mb-3">
+                        <div class="bg-light p-3 rounded" style="max-width: 70%;">
+                            {{ chat.response }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="message" placeholder="Type your message..." required>
+            <button class="btn btn-primary" type="submit">Send</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
