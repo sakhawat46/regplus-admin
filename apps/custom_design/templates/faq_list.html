@@ -1,59 +1,226 @@
 {% extends layout_path %}
 {% load widget_tweaks %}
 {% load static %}
+
 {% block content %}
 <style>
-    .card {
-        background-color: #fff;
-        color: #000;
-        border-radius: 1rem;
+    * {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .form-control, .form-select {
-        background-color: #fff;
-        color: #000;
-        border-color: #ccc;
+
+    body {
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+        color: #333;
     }
-    .form-control:focus {
-        border-color: #999;
-        box-shadow: none;
+
+    .container {
+        max-width: 1500px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
     }
-    label {
-        margin-bottom: 0.3rem;
-        font-weight: 500;
+
+    h2 {
+        color: #2c3e50;
+        font-size: 24px;
+        margin-bottom: 10px;
     }
+
+    .table-controls {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    .search-box input {
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        width: 200px;
+    }
+
     .btn-primary {
-        background-color: #000;
-        color: #fff;
+        {% comment %} background-color: #000; {% endcomment %}
+        {% comment %} color: #fff; {% endcomment %}
         border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
     }
+
     .btn-primary:hover {
         background-color: #333;
         color: #fff;
     }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-warning {
+        background-color: #f0ad4e;
+        color: #fff;
+    }
+
+    .btn-warning:hover {
+        background-color: #ec971f;
+        color: #fff;
+    }
+
+    .btn-danger {
+        background-color: #d9534f;
+        color: #fff;
+    }
+
+    .btn-danger:hover {
+        background-color: #c9302c;
+        color: #fff;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .pagination a,
+    .pagination span {
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #f8f9fa;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .pagination a:hover {
+        background-color: #e9ecef;
+    }
+
+    .pagination .disabled {
+        color: #aaa;
+        cursor: not-allowed;
+    }
 </style>
-<h2>FAQs</h2>
-<a href="{% url 'faq_add' %}" class="btn btn-primary">Add FAQ</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Question</th>
-            <th>Answer</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for faq in faqs %}
-        <tr>
-            <td>{{ faq.title }}</td>
-            <td>{{ faq.description }}</td>
-            <td>
-                <a href="{% url 'faq_edit' faq.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                <a href="{% url 'faq_delete' faq.pk %}" class="btn btn-sm btn-danger">Delete</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="3">No FAQs found.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+<div class="container">
+    {% comment %} <h2>FAQs</h2>
+
+    <div class="table-controls">
+        <div class="search-box">
+            Search: <input type="text" id="search-input" placeholder="Search...">
+        </div>
+        <a href="{% url 'faq_add' %}"><button type="button" class="btn-primary">Add New FAQ</button></a>
+    </div> {% endcomment %}
+    <h1 class="text-center display-3">FAQs</h1>
+        
+        <div class="table-controls">
+            <div class="search-box">
+                Search: <input type="text" id="search-input" placeholder="Search...">
+            </div>
+            <div class="show-entries">
+              <a href="{% url 'faq_add' %}"><button type="button" class="btn btn-primary">Add New FAQ</button></a>
+            </div>
+            
+        </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Answer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="faq-table-body">
+            {% for faq in faqs %}
+            <tr>
+                <td>{{ faq.title }}</td>
+                <td>{{ faq.description }}</td>
+                <td>
+                    <a href="{% url 'faq_edit' faq.pk %}" class="btn btn-success">Edit</a>
+                    <a href="{% url 'faq_delete' faq.pk %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No FAQs found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">&laquo; Previous</a>
+        {% else %}
+            <span class="disabled">&laquo; Previous</span>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next &raquo;</a>
+        {% else %}
+            <span class="disabled">Next &raquo;</span>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        const tableBody = document.getElementById('faq-table-body');
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let rowMatches = false;
+
+                for (let i = 0; i <= 1; i++) {
+                    if (cells[i].textContent.toLowerCase().includes(searchTerm)) {
+                        rowMatches = true;
+                        break;
+                    }
+                }
+
+                row.style.display = rowMatches ? '' : 'none';
+            });
+        });
+    });
+</script>
 {% endblock %}

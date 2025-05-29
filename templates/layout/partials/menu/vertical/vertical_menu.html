@@ -1,5 +1,4 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-  <!-- ! Hide app brand if navbar-full -->
   {% if not navbar_full %}
   <div class="app-brand demo">
     <a href="{% url 'index' %}" class="app-brand-link">
@@ -8,231 +7,185 @@
       </span>
       <span class="app-brand-text demo menu-text fw-bold ms-2">{% get_theme_variables 'template_name' %}</span>
     </a>
-
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
       <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
     </a>
   </div>
   {% endif %}
 
-
   <div class="menu-inner-shadow"></div>
 
   <ul class="menu-inner py-1">
-    <li class="menu-item {% if 'index' == request.resolver_match.url_name or '/dashbord/' in request.path %}active open{% endif %}">
+    <li class="menu-item {% if 'index' == request.resolver_match.url_name or '/dashbord/' in request.path %}active open{% endif %}" style="display: block !important;">
       <a href="{% url 'index' %}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-home-smile"></i>
-        <div class="text-truncate" data-i18n="Dashboards">Dashboards</div>
+        <div class="text-truncate">Dashboards</div>
       </a>
     </li>
-    
 
-
-
-        <!-- Users -->
-    <li class="menu-item {% if '/user/' in request.path or '/users/' in request.path %}active open{% endif %}">
+    <!-- Users -->
+    <li class="menu-item active open">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-        <div class="text-truncate" data-i18n="Authentications">Users</div>
+        <i class="menu-icon tf-icons bx bx-user-circle"></i>
+        <div class="text-truncate">Users</div>
       </a>
-      <ul class="menu-sub">
+      <ul class="menu-sub" style="display: block;">
         <li class="menu-item {% if '/users/' in request.path %}active{% endif %}">
-          <a href="{% url 'user-list'%}" class="menu-link" >
-            <div class="text-truncate" data-i18n="Login">Users</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/user/create/' in request.path %}active{% endif %}">
-          <a href="{% url 'user-create'%}" class="menu-link" >
-            <div class="text-truncate" data-i18n="Register">Add User</div>
+          <a href="{% url 'user-list'%}" class="menu-link">
+            <div class="text-truncate">Users Manager</div>
           </a>
         </li>
       </ul>
     </li>
 
-
-
     <!-- Blogs -->
-    {% comment %} <li class="menu-item {% if 'blog' in request.path %}active open{% endif %}"> {% endcomment %}
-     <li class="menu-item open">
+    <li class="menu-item active open">
       <a href="javascript:void(0)" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-copy"></i>
-        <div class="text-truncate" data-i18n="Extended UI">Blogs</div>
+        <i class="menu-icon tf-icons bx bx-news"></i>
+        <div class="text-truncate">Blogs</div>
       </a>
-      <ul class="menu-sub">
+      <ul class="menu-sub" style="display: block;">
         <li class="menu-item {% if '/blogs/' in request.path %}active{% endif %}">
           <a href="{% url 'blog-list' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Perfect Scrollbar">Blog List</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/blog/add/' in request.path %}active{% endif %}">
-          <a href="{% url 'blog-add' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Text Divider">Create New</div>
+            <div class="text-truncate">Blog List</div>
           </a>
         </li>
         <li class="menu-item {% if '/blog/categories/' in request.path %}active{% endif %}">
           <a href="{% url 'category-list' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Text Divider">Categories</div>
+            <div class="text-truncate">Categories</div>
           </a>
         </li>
       </ul>
     </li>
-
-
 
     <!-- Services -->
-    {% comment %} <li class="menu-item {% if '/service/' in request.path %}active open{% endif %}"> {% endcomment %}
-     <li class="menu-item open">
+    <li class="menu-item active open">
       <a href="javascript:void(0)" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-detail"></i>
-        <div class="text-truncate" data-i18n="Form Elements">Services</div>
+        <i class="menu-icon tf-icons bx bx-cog"></i>
+        <div class="text-truncate">Services</div>
       </a>
-      <ul class="menu-sub">
+      <ul class="menu-sub" style="display: block;">
         <li class="menu-item {% if '/service/list' in request.path %}active{% endif %}">
           <a href="{% url 'service_list' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Basic Inputs">Service List</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/service/create' in request.path %}active{% endif %}">
-          <a href="{% url 'add_service' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Input groups">Create New</div>
+            <div class="text-truncate">Service List</div>
           </a>
         </li>
       </ul>
     </li>
-    <!-- Training Videooo -->
-    {% comment %} <li class="menu-item {% if '/service/' in request.path %}active open{% endif %}"> {% endcomment %}
-     <li class="menu-item open">
+
+    <!-- Training Video -->
+    <li class="menu-item active open">
       <a href="javascript:void(0)" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-detail"></i>
-        <div class="text-truncate" data-i18n="Form Elements">Training Videooo</div>
+        <i class="menu-icon tf-icons bx bx-video"></i>
+        <div class="text-truncate">Training Videos</div>
       </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if '/service/list' in request.path %}active{% endif %}">
+      <ul class="menu-sub" style="display: block;">
+        <li class="menu-item {% if '/train/' in request.path %}active{% endif %}">
           <a href="{% url 'train_video_list' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Basic Inputs">Video List</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/service/create' in request.path %}active{% endif %}">
-          <a href="{% url 'train_video_add' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Input groups">Create New</div>
+            <div class="text-truncate">Video List</div>
           </a>
         </li>
       </ul>
     </li>
-    <!-- Faq Question -->
-    {% comment %} <li class="menu-item {% if '/service/' in request.path %}active open{% endif %}"> {% endcomment %}
-     <li class="menu-item open">
-      <a href="javascript:void(0)" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-detail"></i>
 
-        <div class="text-truncate" data-i18n="Form Elements">Faq Question</div>
+    <!-- FAQ -->
+    <li class="menu-item active open">
+      <a href="javascript:void(0)" class="menu-link menu-toggle">
+        <i class="menu-icon tf-icons bx bx-help-circle"></i>
+        <div class="text-truncate">FAQ Questions</div>
       </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if '/service/list' in request.path %}active{% endif %}">
+      <ul class="menu-sub" style="display: block;">
+        <li class="menu-item {% if '/faq/' in request.path %}active{% endif %}">
           <a href="{% url 'faq_list' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Basic Inputs">FAQ List</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/service/create' in request.path %}active{% endif %}">
-          <a href="{% url 'faq_add' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Input groups">Create New</div>
+            <div class="text-truncate">FAQ List</div>
           </a>
         </li>
       </ul>
     </li>
 
-    {% comment %} servey Question  {% endcomment %}
-    {% comment %} <li class="menu-item {% if '/servey/' in request.path %}active open{% endif %}"> {% endcomment %}
-     <li class="menu-item open">
+    <!-- Survey -->
+    <li class="menu-item active open">
       <a href="javascript:void(0)" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-detail"></i>
-        <div class="text-truncate" data-i18n="Form Elements">Servey Question</div>
+        <i class="menu-icon tf-icons bx bx-question-mark"></i>
+        <div class="text-truncate">Survey Questions</div>
       </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if '/service/list' in request.path %}active{% endif %}">
-          <a href="{% url 'survey_admin_add' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Basic Inputs">Add Question</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/service/create' in request.path %}active{% endif %}">
+      <ul class="menu-sub" style="display: block;">
+        <li class="menu-item {% if '/survey/' in request.path %}active{% endif %}">
           <a href="{% url 'survey_admin_list' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Input groups">Question List</div>
+            <div class="text-truncate">Question List</div>
           </a>
         </li>
       </ul>
     </li>
-    <li class="menu-item {% if '/servey/' in request.path %}active open{% endif %}">
+
+    <!-- Home Page -->
+    <li class="menu-item active open">
       <a href="javascript:void(0)" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-detail"></i>
-        <div class="text-truncate" data-i18n="Form Elements">Home Page</div>
+        <i class="menu-icon tf-icons bx bx-home-alt"></i>
+        <div class="text-truncate">Home Page</div>
       </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if '/service/list' in request.path %}active{% endif %}">
+      <ul class="menu-sub" style="display: block;">
+        <li class="menu-item {% if 'custom_hero_section' in request.resolver_match.url_name %}active{% endif %}">
           <a href="{% url 'custom_hero_section' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Basic Inputs">Hero Section</div>
+            <div class="text-truncate">Hero Section</div>
           </a>
         </li>
-        <li class="menu-item {% if '/service/create' in request.path %}active{% endif %}">
+        <li class="menu-item {% if 'manage_cards' in request.resolver_match.url_name %}active{% endif %}">
           <a href="{% url 'manage_cards' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Input groups">Card Section</div>
+            <div class="text-truncate">Card Section</div>
           </a>
         </li>
-        <li class="menu-item {% if '/service/create' in request.path %}active{% endif %}">
+        <li class="menu-item {% if 'custom_admin_footer_upper' in request.resolver_match.url_name %}active{% endif %}">
           <a href="{% url 'custom_admin_footer_upper' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Input groups">Footer Hero</div>
+            <div class="text-truncate">Footer Hero</div>
           </a>
         </li>
       </ul>
     </li>
-    <li class="menu-item {% if '/servey/' in request.path %}active open{% endif %}">
+
+    <!-- About Us -->
+    <li class="menu-item active open">
       <a href="javascript:void(0)" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-detail"></i>
-        <div class="text-truncate" data-i18n="Form Elements">About Us Page</div>
+        <i class="menu-icon tf-icons bx bx-user"></i>
+        <div class="text-truncate">About Us Page</div>
       </a>
-      <ul class="menu-sub">
-       
-        <li class="menu-item {% if '/service/create' in request.path %}active{% endif %}">
+      <ul class="menu-sub" style="display: block;">
+        <li class="menu-item {% if 'custom_admin_about_us' in request.resolver_match.url_name %}active{% endif %}">
           <a href="{% url 'custom_admin_about_us' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Input groups">About Us Edit</div>
+            <div class="text-truncate">About Us Edit</div>
           </a>
         </li>
       </ul>
     </li>
 
-
-
-            <!-- Settings -->
-    <li class="menu-item {% if '/settings/' in request.path %}active open{% endif %}">
+    <!-- Settings -->
+    <li class="menu-item active open">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon tf-icons bx bx-dock-top"></i>
-        <div class="text-truncate" data-i18n="Account Settings">Settings</div>
+        <i class="menu-icon tf-icons bx bx-cog"></i>
+        <div class="text-truncate">Settings</div>
       </a>
-      <ul class="menu-sub">
+      <ul class="menu-sub" style="display: block;">
         <li class="menu-item {% if '/settings/system-settings' in request.path %}active{% endif %}">
           <a href="{% url 'settings_dashboard' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Notifications">System Settings</div>
+            <div class="text-truncate">System Settings</div>
           </a>
         </li>
         <li class="menu-item {% if '/settings/header-footer' in request.path %}active{% endif %}">
           <a href="{% url 'header_footer_dashboard' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Connections">Header Footer</div>
+            <div class="text-truncate">Header Footer</div>
           </a>
         </li>
         <li class="menu-item {% if '/settings/seo' in request.path %}active{% endif %}">
           <a href="{% url 'seo' %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Connections">Meta SEO</div>
+            <div class="text-truncate">Meta SEO</div>
           </a>
         </li>
         <li class="menu-item {% if '/settings/payment-method' in request.path %}active{% endif %}">
           <a href="{% url "paymentmethod-list" %}" class="menu-link">
-            <div class="text-truncate" data-i18n="Connections">Payment Methods</div>
+            <div class="text-truncate">Payment Methods</div>
           </a>
         </li>
       </ul>
     </li>
-
-
   </ul>
-
-
 </aside>

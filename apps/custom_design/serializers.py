@@ -8,3 +8,9 @@ class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model=MainModel
         fields=['id','title','files','description']
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=MainModel
+        fields=['id','title','files']
+
+

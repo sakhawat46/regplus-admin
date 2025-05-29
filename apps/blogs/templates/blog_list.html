@@ -9,25 +9,27 @@
 {% endblock vendor_js %}
 
 {% block content %}
-
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
     <style>
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             margin: 0;
             padding: 20px;
             background-color: #f5f5f5;
             color: #333;
         }
-        
+
         .container {
             max-width: 1500px;
             margin: 0 auto;
@@ -36,212 +38,225 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
-        
+
         h1 {
-            margin-top: 0;
             color: #2c3e50;
             font-size: 24px;
         }
-        
-        h2 {
-            font-size: 18px;
-            color: #7f8c8d;
-            margin-top: 5px;
-            font-weight: normal;
-        }
-        
-        .table-controls {
+
+        .header-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 20px 0;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
-        
-        .show-entries select {
-            padding: 5px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
+
+        .header-controls h1 {
+            margin: 0;
         }
-        
-        .search-box input {
-            padding: 5px 10px;
+
+        .search-create-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .search-create-controls input {
+            padding: 6px 10px;
             border-radius: 4px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             width: 200px;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-        
+
         th, td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-        
+
         th {
             background-color: #f8f9fa;
             font-weight: 600;
             color: #2c3e50;
         }
-        
+
         tr:hover {
             background-color: #f5f5f5;
         }
-        
-        .action-link {
-            color: #3498db;
-            text-decoration: none;
-            margin-right: 10px;
+
+        .table td .fa-solid {
+            transition: transform 0.2s ease, color 0.2s ease;
+            cursor: pointer;
         }
-        
-        .action-link:hover {
-            text-decoration: underline;
+
+        .table td .fa-solid:hover {
+            transform: scale(1.2);
         }
-        
-        .delete-link {
-            color: #e74c3c;
+
+        .text-primary:hover {
+            color: #0056b3 !important;
         }
-        
+
+        .text-danger:hover {
+            color: #c0392b !important;
+        }
+
         .table-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: #666;
         }
-        
+
         .pagination {
             display: flex;
             gap: 10px;
         }
-        
-        .pagination button {
-            padding: 5px 10px;
+
+        .pagination .page-link {
+            padding: 6px 12px;
             background-color: #f8f9fa;
             border: 1px solid #ddd;
             border-radius: 4px;
             cursor: pointer;
+            color: #333;
+            text-decoration: none;
         }
-        
-        .pagination button:hover {
+
+        .pagination .page-link:hover {
             background-color: #e9ecef;
         }
-        
-        .pagination button:disabled {
+
+        .pagination .disabled {
             color: #aaa;
-            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .header-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-create-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-create-controls input {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center display-4">Manage Your All Blogs</h1>
-        
-        <div class="table-controls">
-            <div class="show-entries">
-              <a href="{% url 'blog-add' %}"><button type="button" class="btn btn-info">Create New Blog</button></a>
-            </div>
-            <div class="search-box">
-                Search: <input type="text" id="search-input" placeholder="Search...">
-            </div>
-        </div>
-        
-        <table id="categories-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Thumbnail</th>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Author</th>
-                    <th>Publish date</th>
-                    <th>Last modified</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody>
-              {% for object in object_list %}
-                <tr>
-                    <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
-                    <td>
-                        {% if object.thumbnail %}
-                            <img src="{{ object.thumbnail.url }}" alt="{{ object.title }}" style="width: 50px; height: 50px; object-fit: cover;">
-                            {% else %}
-                            No Thumbnail
-                        {% endif %}
-                    </td>
-                    <td><a href="{% url 'blog-edit' object.pk %}">{{ object.blog_title|truncatechars:20 }}</a></td>
-                    <td>{{ object.category }}</td>
-                    <td>{{ object.author}}</td>
-                    <td>{{ object.publish_date|date:"M. d, Y" }}</td>
-                    <td>{{ object.update_date|date:"M. d, Y" }}</td>
-                    <td>
-                        <a href="{% url 'blog-edit' object.pk %}" class="btn btn-success">Edit</a>
-                    </td>
-                    <td>
-                        <a href="{% url 'blog-delete' object.pk %}" class="btn btn-danger">Delete</a>
-                    </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-        </table>
-        
-        <div class="table-footer">
-            <div class="showing-entries">
-                Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries
-            </div>
-            <div class="pagination">
-            {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link">Previous</a>
-            {% else %}
-                <span class="page-link disabled">Previous</span>
-            {% endif %}
-            
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link">Next</a>
-            {% else %}
-                <span class="page-link disabled">Next</span>
-            {% endif %}
-            </div>
+<div class="container">
+
+    <div class="header-controls">
+        <h1>Manage Your Blogs</h1>
+        <div class="search-create-controls">
+            <label for="search-input" class="mb-0">Search:</label>
+            <input type="text" id="search-input" placeholder="Search...">
+            <a href="{% url 'blog-add' %}">
+                <button type="button" class="btn btn-primary">Create New Blog</button>
+            </a>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Search functionality
-            const searchInput = document.getElementById('search-input');
-            const tableBody = document.querySelector('#categories-table tbody');
-            const rows = Array.from(tableBody.querySelectorAll('tr'));
-            
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
-                
-                rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    let rowMatches = false;
-                    
-                    // Skip the first cell (index) and last two cells (actions)
-                    for (let i = 1; i < cells.length - 2; i++) {
-                        if (cells[i].textContent.toLowerCase().includes(searchTerm)) {
-                            rowMatches = true;
-                            break;
-                        }
+    <table id="categories-table" class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Thumbnail</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Author</th>
+            <th>Publish date</th>
+            <th>Last modified</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for object in object_list %}
+            <tr>
+                <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                <td>
+                    {% if object.thumbnail %}
+                        <img src="{{ object.thumbnail.url }}" alt="{{ object.title }}" style="width: 50px; height: 50px; object-fit: cover;">
+                    {% else %}
+                        No Thumbnail
+                    {% endif %}
+                </td>
+                <td><a href="{% url 'blog-edit' object.pk %}">{{ object.blog_title|truncatechars:20 }}</a></td>
+                <td>{{ object.category }}</td>
+                <td>{{ object.author }}</td>
+                <td>{{ object.publish_date|date:"M. d, Y" }}</td>
+                <td>{{ object.update_date|date:"M. d, Y" }}</td>
+                <td>
+                    <div class="d-flex align-items-center gap-3 fs-5">
+                        <a href="{% url 'blog-edit' object.pk %}" class="text-primary" title="Edit">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+                        <a href="{% url 'blog-delete' object.pk %}" class="text-danger" title="Delete">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="table-footer">
+        <div class="showing-entries">
+            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries
+        </div>
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link"><i class="fa-solid fa-arrow-left"></i></a>
+            {% else %}
+                <span class="page-link disabled"><i class="fa-solid fa-arrow-left"></i></span>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link"><i class="fa-solid fa-arrow-right-long"></i></a>
+            {% else %}
+                <span class="page-link disabled"><i class="fa-solid fa-arrow-right-long"></i></span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input');
+        const tableBody = document.querySelector('#categories-table tbody');
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let rowMatches = false;
+                for (let i = 1; i < cells.length - 2; i++) {
+                    if (cells[i].textContent.toLowerCase().includes(searchTerm)) {
+                        rowMatches = true;
+                        break;
                     }
-                    
-                    row.style.display = rowMatches ? '' : 'none';
-                });
-                
-                updateEntryCount();
+                }
+                row.style.display = rowMatches ? '' : 'none';
             });
-            
         });
-    </script>
+    });
+</script>
 </body>
 </html>
-
-
 {% endblock %}
