@@ -99,13 +99,15 @@ class CustomAdminAboutUsView(View):
     template_name = 'about_us_edit.html'
 
     def get(self, request):
-        about_us, _ = MainModel.objects.get_or_create(pk=1)
+        about_us, created = MainModel.objects.get_or_create(page_name='about',
+    page_section='hero')
         form = AboutUsForm(instance=about_us)
         context = self.get_context_data(form=form)
         return render(request, self.template_name, context)
 
     def post(self, request):
-        about_us, _ = MainModel.objects.get_or_create(pk=1)
+        about_us, created = MainModel.objects.get_or_create(page_name='about',
+    page_section='hero')
         form = AboutUsForm(request.POST, request.FILES, instance=about_us)
         context = self.get_context_data(form=form)
         if form.is_valid():
@@ -122,18 +124,24 @@ class CustomAdminHeruSection(View):
     template_name = 'home_edit.html'
 
     def get(self, request):
-        heru_section, _ = MainModel.objects.get_or_create(pk=1)
+        heru_section, created = MainModel.objects.get_or_create(
+    page_name='home',
+    page_section='hero'
+)
         form = HeruSectionForm(instance=heru_section)
         context = self.get_context_data(form=form)
         return render(request, self.template_name, context)
 
     def post(self, request):
-        heru_section, _ = MainModel.objects.get_or_create(pk=1)
+        heru_section, created = MainModel.objects.get_or_create(
+    page_name='home',
+    page_section='hero'
+)
         form = HeruSectionForm(request.POST, request.FILES, instance=heru_section)
         context = self.get_context_data(form=form)
         if form.is_valid():
             form.save()
-            return redirect('custom_admin_about_us')
+            return redirect('manage_cards')
         return render(request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
@@ -236,16 +244,16 @@ class CustomAdminFooterUpeer(View):
     template_name = 'footer_upper_edit.html'
 
     def get(self, request):
-        cus_up_footer, _ = MainModel.objects.get_or_create(
-            page_name='home', page_section='footer_upper'
+        cus_up_footer, created = MainModel.objects.get_or_create(
+            page_name='home', page_section='down'
         )
         form = FooterUpperSectionForm(instance=cus_up_footer)
         context = self.get_context_data(form=form)
         return render(request, self.template_name, context)
 
     def post(self, request):
-        cus_up_footer, _ = MainModel.objects.get_or_create(
-            page_name='home', page_section='footer_upper'
+        cus_up_footer, created = MainModel.objects.get_or_create(
+            page_name='home', page_section='down'
         )
         form = FooterUpperSectionForm(request.POST, request.FILES, instance=cus_up_footer)
         context = self.get_context_data(form=form)
@@ -259,13 +267,6 @@ class CustomAdminFooterUpeer(View):
         context = TemplateLayout.init(self, context)
         return context
 
-from .serializers import VideoSerializer
-class CardViewApi(ListAPIView):
-    queryset = MainModel.objects.filter(page_name='home', page_section='card')
-    serializer_class = CardSerializer
-class VideoViewApi(ListAPIView):
-    queryset = MainModel.objects.filter(page_name='train&FAQ', page_section='hero')
-    serializer_class = VideoSerializer
 
 
 
@@ -273,7 +274,7 @@ class TrainVideoListView(View):
     template_name = 'train_video_list.html'
 
     def get(self, request):
-        videos = MainModel.objects.filter(page_name='train&FAQ', page_section='video')
+        videos = MainModel.objects.filter(page_name='train&FAQ', page_section='hero')
         context = {'videos': videos}
         context = TemplateLayout.init(self, context)
         return render(request, self.template_name, context)
@@ -292,7 +293,7 @@ class TrainVideoCreateView(View):
         if form.is_valid():
             instance = form.save(commit=False)
             instance.page_name = 'train&FAQ'
-            instance.page_section = 'video'
+            instance.page_section = 'hero'
             instance.save()
             return redirect('train_video_list')
         context = {'form': form}
@@ -402,5 +403,44 @@ class FAQDeleteView(DeleteView):
     
 
 
+# Apis Class    
+from .serializers import VideoSerializer,FaqSerializer,HomeHeroSerializer,HomecardSerializer,HomeFooterUpperSerializer,AboutUsSerializer
+class CardViewApi(ListAPIView):
+    queryset = MainModel.objects.filter(page_name='home', page_section='card')
+    serializer_class = CardSerializer
+class VideoViewApi(ListAPIView):
+    queryset = MainModel.objects.filter(page_name='train&FAQ', page_section='hero')
+    serializer_class = VideoSerializer
+
+class FaqViewApi(ListAPIView):
+    queryset = MainModel.objects.filter(page_name='train&FAQ', page_section='down')
+    serializer_class = FaqSerializer
 
 
+class HomeHeroViewApi(ListAPIView):
+    queryset = MainModel.objects.filter(page_name='home', page_section='hero')
+    serializer_class = HomeHeroSerializer
+
+class HomecardViewApi(ListAPIView):
+    queryset = MainModel.objects.filter(page_name='home', page_section='card')
+    serializer_class = HomecardSerializer
+
+class HomeFooterUpperSerializer(ListAPIView):
+    queryset=MainModel.objects.filter(page_name='home',page_section='down')
+    serializer_class=HomeFooterUpperSerializer
+
+class AboutUsViewApi(ListAPIView):
+    queryset=MainModel.objects.filter(page_name='about',page_section='hero')
+    serializer_class=AboutUsSerializer
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import SurveyQuestion
+from .serializers import SurveyQuestionSerializer
+
+class SurveyQuestionListApiView(APIView):
+    def get(self, request):
+        questions = SurveyQuestion.objects.prefetch_related('options').order_by('order')
+        serializer = SurveyQuestionSerializer(questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -54,7 +54,7 @@ urlpatterns = [
     path("", include("apps.g_setting.urls")),
     
     # Chat urls
-    path("", include("apps.chat.urls")),
+    # path("", include("apps.chat.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
