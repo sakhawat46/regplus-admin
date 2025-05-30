@@ -1,63 +1,255 @@
 {% extends layout_path %}
 {% load widget_tweaks %}
 {% load static %}
+
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
-    .card {
-        background-color: #fff;
-        color: #000;
-        border-radius: 1rem;
+    * {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .form-control, .form-select {
-        background-color: #fff;
-        color: #000;
-        border-color: #ccc;
+    
+    body {
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+        color: #333;
     }
-    .form-control:focus {
-        border-color: #999;
-        box-shadow: none;
+    .action-icons {
+      display: flex;
+      gap: 12px;
+      font-size: 18px;
     }
-    label {
-        margin-bottom: 0.3rem;
-        font-weight: 500;
+
+    .action-icons a {
+      text-decoration: none;
+      transition: color 0.2s ease-in-out;
     }
+
+    {% comment %} .action-icons .edit {
+      color: #28a745;
+    }
+
+    .action-icons .edit:hover {
+      color: #218838;
+    } {% endcomment %}
+
+    .action-icons .delete {
+      color: #dc3545;
+    }
+
+    .action-icons .delete:hover {
+      color: #c82333;
+    }
+    .container {
+        max-width: 1500px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+    
+    h2 {
+        color: #2c3e50;
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    
+    .table-controls {
+        display: flex;
+        justify-content: flex-end; /* align right */
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+    
+    .search-box input {
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        width: 200px;
+    }
+
     .btn-primary {
-        background-color: #000;
-        color: #fff;
+        {% comment %} background-color: #000;
+        color: #fff; {% endcomment %}
         border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
     }
     .btn-primary:hover {
         background-color: #333;
         color: #fff;
     }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+    
+    .btn-sm {
+        padding: 4px 10px;
+        font-size: 0.875rem;
+        border-radius: 4px;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .btn-warning {
+        background-color: #f0ad4e;
+        color: #fff;
+    }
+    .btn-warning:hover {
+        background-color: #ec971f;
+        color: #fff;
+    }
+    
+    .btn-danger {
+        background-color: #d9534f;
+        color: #fff;
+    }
+    .btn-danger:hover {
+        background-color: #c9302c;
+        color: #fff;
+    }
+    .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #666;
+        }
+
 </style>
-<h2>Train Videos</h2>
-<a href="{% url 'train_video_add' %}" class="btn btn-primary">Add Video</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>File</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for video in videos %}
-        <tr>
-            <td>{{ video.title }}</td>
-            <td>
-                {% if video.files %}
-                    <a href="{{ video.files.url }}">Download</a>
-                {% endif %}
-            </td>
-            <td>
-                <a href="{% url 'train_video_edit' video.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                <a href="{% url 'train_video_delete' video.pk %}" class="btn btn-sm btn-danger">Delete</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="3">No videos found.</td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+<div class="container">
+    
+    
+   <div class="table-controls d-flex justify-content-between align-items-center">
+    <div>
+        <h6 class="mb-0" style="font-size: 1.25rem; font-weight: 600;">Train Video</h6>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <div class="search-box">
+            Search: <input type="text" id="search-input" placeholder="Search...">
+        </div>
+        <div class="show-entries">
+            <a href="{% url 'train_video_add' %}">
+                <button type="button" class="btn btn-primary">Add New Video</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+    
+{% if videos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>File</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="videos-table-body">
+            {% for video in videos %}
+            <tr>
+                <td>{{ video.title }}</td>
+                <td>
+                    {% if video.files %}
+                        <a href="{{ video.files.url }}">Download</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% comment %} <a href="{% url 'train_video_edit' video.pk %}" class="btn btn-success">Edit</a>
+                    <a href="{% url 'train_video_delete' video.pk %}" class="btn btn-danger">Delete</a> {% endcomment %}
+
+                    <div class="action-icons">
+            <a href="{% url 'train_video_edit' video.pk %}" class="edit" title="Edit">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+            <a href="{% url 'train_video_delete' video.pk %}" class="delete" title="Delete">
+              <i class="fa-solid fa-trash"></i>
+            </a>
+          </div>
+                </td>
+            </tr>      
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="table-footer">
+        <div class="showing-entries">
+            Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries
+        </div>
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link"><i class="fa-solid fa-arrow-left"></i></a>
+            {% else %}
+                <span class="page-link disabled"><i class="fa-solid fa-arrow-left"></i></span>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&per_page={{ per_page }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link"><i class="fa-solid fa-arrow-right-long"></i></a>
+            {% else %}
+                <span class="page-link disabled"><i class="fa-solid fa-arrow-right-long"></i></span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% else %}
+<img src="{% static 'empty.jpg' %}" alt="No data" style="max-height: 500px; max-width: 500px;" class="justify-content-center d-block mx-auto mb-4">
+    <div class="alert alert-info text-center">
+      
+      
+      No videos found. Click "Add New Video" to get started.
+    
+    </div>
+    {% endif %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        const tableBody = document.getElementById('videos-table-body');
+        const rows = Array.from(tableBody.querySelectorAll('tr'));
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let rowMatches = false;
+
+                // Check title and file columns (indexes 0 and 1)
+                for (let i = 0; i <= 1; i++) {
+                    if (cells[i].textContent.toLowerCase().includes(searchTerm)) {
+                        rowMatches = true;
+                        break;
+                    }
+                }
+
+                row.style.display = rowMatches ? '' : 'none';
+            });
+        });
+    });
+</script>
+
 {% endblock %}

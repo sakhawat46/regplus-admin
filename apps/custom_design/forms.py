@@ -98,7 +98,7 @@ class TrainVideoForm(forms.ModelForm):
 class FAQForm(forms.ModelForm):
     class Meta:
         model = MainModel
-        fields = ['title', 'description']
+        fields = ['title', 'description', 'page_section', 'page_name']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': CKEditorWidget(),

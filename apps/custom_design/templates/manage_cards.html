@@ -1,50 +1,119 @@
 {% extends layout_path %}
+{% load static %}
 {% load widget_tweaks %}
+
+{% block title %}Manage Homepage Cards{% endblock %}
 
 {% block content %}
 <style>
-    .card {
-        background-color: #fff;
-        color: #000;
-        border-radius: 1rem;
+  .card {
+    background-color: #fff;
+    color: #000;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btn-add {
+    background-color: #000;
+    color: #fff;
+    border: none;
+  }
+  .btn-add:hover {
+    background-color: #333;
+  }
+  .table img {
+    height: 40px;
+    object-fit: contain;
+  }
+  .action-icons {
+      display: flex;
+      gap: 12px;
+      font-size: 18px;
     }
-    .form-control, .form-select {
-        background-color: #fff;
-        color: #000;
-        border-color: #ccc;
+
+    .action-icons a {
+      text-decoration: none;
+      transition: color 0.2s ease-in-out;
     }
-    .form-control:focus {
-        border-color: #999;
-        box-shadow: none;
+
+    {% comment %} .action-icons .edit {
+      color: #28a745;
     }
-    label {
-        margin-bottom: 0.3rem;
-        font-weight: 500;
+
+    .action-icons .edit:hover {
+      color: #218838;
+    } {% endcomment %}
+
+    .action-icons .delete {
+      color: #dc3545;
     }
-    .btn-primary {
-        background-color: #000;
-        color: #fff;
-        border: none;
-    }
-    .btn-primary:hover {
-        background-color: #333;
-        color: #fff;
+
+    .action-icons .delete:hover {
+      color: #c82333;
     }
 </style>
-<h1>Manage Homepage Cards</h1>
-<a href="{% url 'add_card' %}">+ Add New Card</a>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-<ul>
-  {% for card in cards %}
-    <li>
-      {% if card.logo %}<img src="{{ card.logo.url }}" width="50">{% endif %}
-      <strong>{{ card.title }}</strong><br>
-      {{ card.description }}<br>
-      <a href="{% url 'edit_card' card.pk %}">Edit</a> |
-      <a href="{% url 'delete_card' card.pk %}">Delete</a>
-    </li>
-  {% empty %}
-    <li>No cards yet.</li>
-  {% endfor %}
-</ul>
+<div class="card mt-5">
+  <div class="card-header">
+    <h4 class="mb-0">Manage Homepage Cards</h4>
+    <a href="{% url 'add_card' %}" class="btn btn-primary">
+      <i class="fas fa-plus me-1"></i> Add New Card
+    </a>
+  </div>
+  {% if cards %}
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Logo</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for card in cards %}
+          <tr>
+            <td>
+              {% if card.logo %}
+                <img src="{{ card.logo.url }}" alt="Logo">
+              {% else %}
+                <span class="text-muted">No Logo</span>
+              {% endif %}
+            </td>
+            <td>{{ card.title }}</td>
+            <td>{{ card.description }}</td>
+            <td>
+              
+
+              <div class="action-icons">
+            <a href="{% url 'edit_card' card.pk %}" class="edit" title="Edit">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+            <a href="{% url  'delete_card' card.pk %}" class="delete" title="Delete">
+              <i class="fa-solid fa-trash"></i>
+            </a>
+          </div>
+            </td>
+          </tr>
+        
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <img src="{% static 'empty.jpg' %}" alt="No data" style="max-height: 500px; max-width: 500px;" class="justify-content-center d-block mx-auto mb-4">
+    <div class="alert alert-info text-center">
+      
+      
+      No Cards found. Click "Add New Card" to get started.
+    
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "apps.settings",
     "apps.services",
     "apps.custom_design",
+    "apps.g_setting",
     "apps.chat",
 
 

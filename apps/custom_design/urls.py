@@ -9,6 +9,7 @@ from .views import (
     TrainVideoUpdateView,
     TrainVideoDeleteView,
     FAQListView, FAQCreateView, FAQUpdateView, FAQDeleteView,
+    VideoViewApi,FaqViewApi,HomeHeroViewApi,HomecardViewApi,HomeFooterUpperSerializer,AboutUsViewApi,SurveyQuestionListApiView,
     survey_question_view, survey_result_view,CustomAdminAboutUsView,CustomAdminHeruSection,CardListView,CardCreateView,CardUpdateView,CardDeleteView,CardViewApi,CustomAdminFooterUpeer
 )
 
@@ -19,9 +20,9 @@ urlpatterns = [
     path('survey/<int:pk>/delete/', SurveyQuestionDeleteView.as_view(), name='survey_admin_delete'),
     path('survey/question/<int:question_order>/', survey_question_view, name='survey_question'),
     path('survey/result/', survey_result_view, name='survey_result'),
-     path('admin-dashboard/about-us/', CustomAdminAboutUsView.as_view(), name='custom_admin_about_us'),
-     path('admin-dashboard/home-heru/', CustomAdminHeruSection.as_view(), name='custom_hero_section'),
-     path('admin-dashboard/home-footer/', CustomAdminFooterUpeer.as_view(), name='custom_admin_footer_upper'),
+    path('admin-dashboard/about-us/', CustomAdminAboutUsView.as_view(), name='custom_admin_about_us'),
+    path('admin-dashboard/home-heru/', CustomAdminHeruSection.as_view(), name='custom_hero_section'),
+    path('admin-dashboard/home-footer/', CustomAdminFooterUpeer.as_view(), name='custom_admin_footer_upper'),
     #  path('admin-dashboard/faq-train/', TrainVideoSection.as_view(), name='train_section'),
 
     #cards edit
@@ -47,4 +48,11 @@ urlpatterns = [
 
     # apis
     path('api/cards/', CardViewApi.as_view(), name='api_cards'),
+    path('api/videos/', VideoViewApi.as_view(), name='api_videos'),
+    path('api/faqs/', FaqViewApi.as_view(), name='api_faqs'),
+    path('api/home-heru/', HomeHeroViewApi.as_view(), name='home_heru'),
+    path('api/home-cards/', HomecardViewApi.as_view(), name='home_cards'),
+    path('api/home-footer-upper/', HomeFooterUpperSerializer.as_view(), name='home_footer_upper'),
+    path('api/about-us/',AboutUsViewApi.as_view(),name='about_us'),
+    path('api/survey/questions/', SurveyQuestionListApiView.as_view(), name='survey-questions'),
 ]

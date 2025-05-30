@@ -36,7 +36,7 @@
 
 <form method="post">
   {% csrf_token %}
-  <button type="submit">Confirm</button>
+  <button type="submit" class="btn-danger">Confirm</button>
   <a href="{% url 'manage_cards' %}">Cancel</a>
 </form>
 {% endblock %}

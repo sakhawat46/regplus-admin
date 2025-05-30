@@ -8,6 +8,10 @@
 {% block content %}
 
 <!-- Services Table -->
+<head>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
 <div class="card">
   <h5 class="card-header d-flex justify-content-between align-items-center">
     <span>Services Management</span>
@@ -30,7 +34,7 @@
           <th>Description</th>
           <th width="100px">Order</th>
           <th width="100px">Status</th>
-          <th width="80px">Actions</th>
+          <th width="120px" class="text-center">Actions</th>
         </tr>
       </thead>
       <tbody class="table-border-bottom-0" id="servicesTableBody">
@@ -57,23 +61,28 @@
           <td>
             <span class="badge bg-label-success">Active</span>
           </td>
-          <td>
-            <div class="dropdown">
-              <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                <i class="bx bx-dots-vertical-rounded"></i>
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="{% url 'update_service' service.id %}">
-                  <i class="bx bx-edit-alt me-1"></i> Edit
-                </a>
-                <a class="dropdown-item" href="{% url 'service_detail' service.id %}">
-                  <i class="bx bx-show me-1"></i> View
-                </a>
-                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ service.id }}">
-                  <i class="bx bx-trash me-1"></i> Delete
-                </a>
-              </div>
-            </div>
+          <td class="text-center align-middle actions-cell">
+            {% comment %} <a href="{% url 'update_service' service.id %}" title="Edit" class="action-icon me-3">
+              <i class="bx bx-edit-alt"></i>
+            </a>
+            <a href="{% url 'service_detail' service.id %}" title="View" class="action-icon me-3">
+              <i class="bx bx-show"></i>
+            </a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ service.id }}" title="Delete" class="action-icon text-danger">
+              <i class="bx bx-trash"></i>
+            </a> {% endcomment %}
+
+            <div class="action-icons">
+            <a href="{% url 'update_service' service.id %}" title="Edit" class="action-icon me-3 text-primary">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+            <a href="{% url 'service_detail' service.id %}" title="View" class="action-icon me-3">
+              <i class="fa-solid fa-eye" style="color: #473c68;"></i>
+            </a>
+            <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ service.id }}" title="Delete" class="action-icon text-danger">
+              <i class="fa-solid fa-trash"></i>
+            </a>
+          </div>
           </td>
         </tr>
 
@@ -101,73 +110,72 @@
         {% empty %}
         <tr>
           <td colspan="6" class="text-center py-4">
-                  <a href="{% url 'add_service' %}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Add Your First Service
-                  </a>
-            </div>
+            <a href="{% url 'add_service' %}" class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i>Add Your First Service
+            </a>
           </td>
         </tr>
-      {% endfor %}
+        {% endfor %}
     </table>
   </div>
   <div class="card-footer">
     <div class="row">
-        <div class="col-sm-12 col-md-6">
-            <div class="dataTables_info" role="status" aria-live="polite">
-                Showing {{ services.start_index }} to {{ services.end_index }} of {{ services.paginator.count }} entries
-            </div>
+      <div class="col-sm-12 col-md-6">
+        <div class="dataTables_info" role="status" aria-live="polite">
+          Showing {{ services.start_index }} to {{ services.end_index }} of {{ services.paginator.count }} entries
         </div>
-        <div class="col-sm-12 col-md-6">
-            <div class="dataTables_paginate paging_simple_numbers">
-                <ul class="pagination justify-content-end">
-                    {% if services.has_previous %}
-                        <li class="paginate_button page-item previous">
-                            <a href="?page=1" class="page-link">&laquo; First</a>
-                        </li>
-                        <li class="paginate_button page-item">
-                            <a href="?page={{ services.previous_page_number }}" class="page-link">Previous</a>
-                        </li>
-                    {% else %}
-                        <li class="paginate_button page-item previous disabled">
-                            <a href="#" class="page-link">&laquo; First</a>
-                        </li>
-                        <li class="paginate_button page-item disabled">
-                            <a href="#" class="page-link">Previous</a>
-                        </li>
-                    {% endif %}
+      </div>
+      <div class="col-sm-12 col-md-6">
+        <div class="dataTables_paginate paging_simple_numbers">
+          <ul class="pagination justify-content-end">
+            {% if services.has_previous %}
+              <li class="paginate_button page-item previous">
+                {% comment %} <a href="?page=1" class="page-link">&laquo; First</a> {% endcomment %}
+              </li>
+              <li class="paginate_button page-item">
+                <a href="?page={{ services.previous_page_number }}" class="page-link"><i class="fa-solid fa-arrow-left"></i></a>
+              </li>
+            {% else %}
+              <li class="paginate_button page-item previous disabled">
+                {% comment %} <a href="#" class="page-link">&laquo; First</a> {% endcomment %}
+              </li>
+              <li class="paginate_button page-item disabled">
+                <a href="#" class="page-link"><i class="fa-solid fa-arrow-left"></i></a>
+              </li>
+            {% endif %}
 
-                    {% for num in services.paginator.page_range %}
-                        {% if services.number == num %}
-                            <li class="paginate_button page-item active">
-                                <a href="#" class="page-link">{{ num }}</a>
-                            </li>
-                        {% elif num > services.number|add:'-3' and num < services.number|add:'3' %}
-                            <li class="paginate_button page-item">
-                                <a href="?page={{ num }}" class="page-link">{{ num }}</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
+            {% for num in services.paginator.page_range %}
+              {% if services.number == num %}
+                <li class="paginate_button page-item active">
+                  <a href="#" class="page-link">{{ num }}</a>
+                </li>
+              {% elif num > services.number|add:'-3' and num < services.number|add:'3' %}
+                <li class="paginate_button page-item">
+                  <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
 
-                    {% if services.has_next %}
-                        <li class="paginate_button page-item">
-                            <a href="?page={{ services.next_page_number }}" class="page-link">Next</a>
-                        </li>
-                        <li class="paginate_button page-item next">
-                            <a href="?page={{ services.paginator.num_pages }}" class="page-link">Last &raquo;</a>
-                        </li>
-                    {% else %}
-                        <li class="paginate_button page-item disabled">
-                            <a href="#" class="page-link">Next</a>
-                        </li>
-                        <li class="paginate_button page-item next disabled">
-                            <a href="#" class="page-link">Last &raquo;</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+            {% if services.has_next %}
+              <li class="paginate_button page-item">
+                <a href="?page={{ services.next_page_number }}" class="page-link"><i class="fa-solid fa-arrow-right"></i></a>
+              </li>
+              <li class="paginate_button page-item next">
+                {% comment %} <a href="?page={{ services.paginator.num_pages }}" class="page-link">Last &raquo;</a> {% endcomment %}
+              </li>
+            {% else %}
+              <li class="paginate_button page-item disabled">
+                <a href="#" class="page-link"><i class="fa-solid fa-arrow-right"></i></a>
+              </li>
+              <li class="paginate_button page-item next disabled">
+                {% comment %} <a href="#" class="page-link">Last &raquo;</a> {% endcomment %}
+              </li>
+            {% endif %}
+          </ul>
         </div>
+      </div>
     </div>
-</div>
+  </div>
 </div>
 <!--/ Services Table -->
 
@@ -179,34 +187,34 @@
 
 <!-- Popup Messages -->
 <div id="popup-messages" class="popup-messages-container">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="popup-message {{ message.tags }}">
-                {{ message }}
-                <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
-            </div>
-        {% endfor %}
-    {% endif %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="popup-message {{ message.tags }}">
+        {{ message }}
+        <span class="close-btn" onclick="this.parentElement.style.display='none';">&times;</span>
+      </div>
+    {% endfor %}
+  {% endif %}
 </div>
 
 <style>
 .popup-messages-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
 }
 
 .popup-message {
-    background-color: #f44336;
-    color: white;
-    padding: 16px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    min-width: 250px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    position: relative;
-    animation: fadein 0.5s, fadeout 0.5s 4.5s;
+  background-color: #f44336;
+  color: white;
+  padding: 16px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  min-width: 250px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  position: relative;
+  animation: fadein 0.5s, fadeout 0.5s 4.5s;
 }
 
 .popup-message.success { background-color: #4CAF50; }
@@ -215,97 +223,126 @@
 .popup-message.error { background-color: #f44336; }
 
 .popup-message .close-btn {
-    position: absolute;
-    top: 4px;
-    right: 8px;
-    cursor: pointer;
-    font-weight: bold;
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
 @keyframes fadein {
-    from { top: 0; opacity: 0; }
-    to { top: 20px; opacity: 1; }
+  from { top: 0; opacity: 0; }
+  to { top: 20px; opacity: 1; }
 }
 
 @keyframes fadeout {
-    from { opacity: 1; }
-    to { opacity: 0; }
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 /* Added to prevent horizontal scroll */
 .table-responsive {
-    overflow-x: auto;
-    max-width: 100%;
+  overflow-x: auto;
+  max-width: 100%;
 }
 .text-truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* No results message styling */
 .no-results {
-    display: none;
-    text-align: center;
-    padding: 20px;
-    color: #6c757d;
+  display: none;
+  text-align: center;
+  padding: 20px;
+  color: #6c757d;
+}
+
+/* Actions column styling */
+.actions-cell {
+  white-space: nowrap;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.actions-cell .action-icon i {
+  font-size: 18px;    /* bigger icon */
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+.actions-cell .action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #495057; /* default icon color */
+  cursor: pointer;
+}
+
+.actions-cell .action-icon.text-danger {
+  color: #dc3545; /* bootstrap danger red */
+}
+
+.actions-cell .action-icon:hover {
+  color: #0d6efd; /* bootstrap primary blue on hover */
 }
 </style>
 
 <script>
-    // Auto-hide messages after 5 seconds
-    setTimeout(() => {
-        document.querySelectorAll('.popup-message').forEach(msg => {
-            msg.style.display = 'none';
-        });
-    }, 5000);
-
-    // Search functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('serviceSearch');
-        const servicesTableBody = document.getElementById('servicesTableBody');
-        const serviceRows = document.querySelectorAll('.service-row');
-
-        // Create no results message if it doesn't exist
-        if (!document.querySelector('.no-results')) {
-            const noResults = document.createElement('tr');
-            noResults.className = 'no-results';
-            noResults.innerHTML = `
-                <td colspan="6">
-                    <div class="d-flex flex-column align-items-center py-4">
-                        <i class="bx bx-search-alt bx-lg mb-2" style="color: #6c757d;"></i>
-                        <p class="mb-0">No services found matching your search</p>
-                    </div>
-                </td>
-            `;
-            servicesTableBody.appendChild(noResults);
-        }
-
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            let hasResults = false;
-
-            serviceRows.forEach(row => {
-                const title = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                const description = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-
-                if (title.includes(searchTerm) || description.includes(searchTerm)) {
-                    row.style.display = '';
-                    hasResults = true;
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            // Show/hide no results message
-            const noResults = document.querySelector('.no-results');
-            if (hasResults || searchTerm === '') {
-                noResults.style.display = 'none';
-            } else {
-                noResults.style.display = '';
-            }
-        });
+  // Auto-hide messages after 5 seconds
+  setTimeout(() => {
+    document.querySelectorAll('.popup-message').forEach(msg => {
+      msg.style.display = 'none';
     });
+  }, 5000);
+
+  // Search functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('serviceSearch');
+    const servicesTableBody = document.getElementById('servicesTableBody');
+    const serviceRows = document.querySelectorAll('.service-row');
+
+    // Create no results message if it doesn't exist
+    if (!document.querySelector('.no-results')) {
+      const noResults = document.createElement('tr');
+      noResults.className = 'no-results';
+      noResults.innerHTML = `
+        <td colspan="6">
+          <div class="d-flex flex-column align-items-center py-4">
+            <i class="bx bx-search-alt bx-lg mb-2" style="color: #6c757d;"></i>
+            <p class="mb-0">No services found matching your search</p>
+          </div>
+        </td>
+      `;
+      servicesTableBody.appendChild(noResults);
+    }
+
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      let hasResults = false;
+
+      serviceRows.forEach(row => {
+        const title = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        const description = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+          row.style.display = '';
+          hasResults = true;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Show/hide no results message
+      const noResults = document.querySelector('.no-results');
+      if (hasResults || searchTerm === '') {
+        noResults.style.display = 'none';
+      } else {
+        noResults.style.display = '';
+      }
+    });
+  });
 </script>
 
 {% endblock %}

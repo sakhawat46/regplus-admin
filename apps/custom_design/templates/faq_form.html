@@ -32,7 +32,7 @@
         color: #fff;
     }
 </style>
-<h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} FAQ</h2>
+<h2 class="text-center">{% if form.instance.pk %}Edit{% else %}Add{% endif %} FAQ</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
