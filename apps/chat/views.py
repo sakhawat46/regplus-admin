@@ -1,120 +1,76 @@
-# views.py
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.permissions import IsAuthenticated
-from .models import ChatHistory
-from .serializers import ChatHistorySerializer
+from .models import Conversation, Message
+from .serializers import ConversationSerializer, MessageSerializer
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 import google.generativeai as genai
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.http import HttpResponse
 
-# Configure Gemini API
+User = get_user_model()
+
+# Configure Gemini
 genai.configure(api_key=settings.GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-2.0-flash')
 
-class ChatBotView(APIView):
-    permission_classes = [IsAuthenticated]  # JWT will handle authentication
-    
+class ConversationListCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        chats = ChatHistory.objects.filter(user=request.user).order_by('-created_at')[:20]
-        serializer = ChatHistorySerializer(chats, many=True)
+        conversations = Conversation.objects.filter(users=request.user)
+        serializer = ConversationSerializer(conversations, many=True)
         return Response(serializer.data)
-    
+
     def post(self, request):
-        message = request.data.get('message', '').strip()
-        if not message:
-            return Response({'error': 'Message cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
+        conversation = Conversation.objects.create()
+        conversation.users.add(request.user)
+        serializer = ConversationSerializer(conversation)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ConversationDetailAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        conversation = get_object_or_404(Conversation.objects.filter(users=request.user),pk=pk)
+        serializer = ConversationSerializer(conversation)
+        return Response(serializer.data)
+
+
+class MessageCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, conversation_id):
+        conversation = get_object_or_404(Conversation.objects.filter(users=request.user), pk=conversation_id)
         
+        # Validate input data
+        question = request.data.get('question')
+        if not question:
+            return Response({'error': 'Question field is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Create message with empty answer initially
+        message = Message.objects.create(conversation=conversation, sender=request.user, question=question, answer="")
+        
+        # Get response from Gemini
         try:
-            # Get response from Gemini
-            response = model.generate_content(message)
-            response_text = response.text
-            
-            # Save to database
-            chat = ChatHistory.objects.create(
-                user=request.user,
-                message=message,
-                response=response_text
-            )
-            
-            serializer = ChatHistorySerializer(chat)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-            
+            response = model.generate_content(question)
+            message.answer = response.text
+            message.save()
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-class PublicChatBotView(APIView):
-    # No authentication required
-    permission_classes = []
+            message.answer = f"Error generating response: {str(e)}"
+            message.save()
+        
+        # Serialize and return the message
+        serializer = MessageSerializer(message)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    def post(self, request):
-        message = request.data.get('message', '').strip()
-        if not message:
-            return Response({'error': 'Message cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            # Get response from Gemini
-            response = model.generate_content(message)
-            response_text = response.text
-            
-            # Save to database (anonymous user)
-            chat = ChatHistory.objects.create(
-                message=message,
-                response=response_text
-            )
-            
-            serializer = ChatHistorySerializer(chat)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-            
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        
 
-@login_required
-def chat_view(request):
-    if request.method == 'POST':
-        message = request.POST.get('message')
-        if message:
-            # Get response from Gemini
-            response = model.generate_content(message)
-            
-            # Save to database
-            ChatHistory.objects.create(
-                user=request.user,
-                message=message,
-                response=response.text
-            )
-    
-    # Get last 10 chats
-    chats = ChatHistory.objects.filter(user=request.user).order_by('-created_at')[:10]
-    return render(request, 'chat.html', {'chats': chats})
+class ConversationDeleteAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
-
-#Check Availavle Model
-def list_models(request):
-    models = genai.list_models()
-    for m in models:
-        print(m.name)
-    return HttpResponse("Check console for available models")
-
-
-
-# from rest_framework import generics
-# from .models import Chat, Message
-# from .serializers import ChatSerializer, MessageSerializer
-
-# class ChatListView(generics.ListAPIView):
-#     serializer_class = ChatSerializer
-#     def get_queryset(self):
-#         user = self.request.user
-#         return Chat.objects.filter(participants=user)
-
-# class MessageListView(generics.ListAPIView):
-#     serializer_class = MessageSerializer
-#     def get_queryset(self):
-#         chat_id = self.kwargs['chat_id']
-#         return Message.objects.filter(chat_id=chat_id)
+    def delete(self, request, conversation_id):
+        conversation = Conversation.objects.filter(users__id=request.user.id)
+        conversation.delete()
+        return Response({"detail": "Conversation deleted successfully."},status=status.HTTP_204_NO_CONTENT)

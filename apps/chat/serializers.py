@@ -1,26 +1,24 @@
-# serializers.py
 from rest_framework import serializers
-from .models import *
+from .models import Conversation, Message
+from django.contrib.auth import get_user_model
 
-class ChatHistorySerializer(serializers.ModelSerializer):
+User = get_user_model()
+
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ChatHistory
-        fields = ['id', 'user', 'message', 'response', 'created_at']
-        read_only_fields = ['user', 'response', 'created_at']
-        
-        
+        model = User
+        fields = ['id', 'email']
 
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ['id', 'sender', 'question', 'answer', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'sender', 'answer', 'created_at', 'updated_at']
 
+class ConversationSerializer(serializers.ModelSerializer):
+    users = UserSerializer(many=True, read_only=True)
+    messages = MessageSerializer(many=True, read_only=True)
 
-
-# class MessageSerializer(serializers.ModelSerializer):
-#     sender = serializers.ReadOnlyField(source='sender.email')
-#     class Meta:
-#         model = Message
-#         fields = ['id', 'sender', 'content', 'timestamp']
-
-# class ChatSerializer(serializers.ModelSerializer):
-#     messages = MessageSerializer(many=True, read_only=True)
-#     class Meta:
-#         model = Chat
-#         fields = ['id', 'participants', 'messages']
+    class Meta:
+        model = Conversation
+        fields = ['id', 'users', 'messages', 'created_at', 'updated_at']
