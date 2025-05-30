@@ -49,6 +49,9 @@ urlpatterns = [
 
     #servey,heru,card
     path("", include("apps.custom_design.urls")),
+
+    # general setting urls
+    path("", include("apps.g_setting.urls")),
     
     # Chat urls
     path("", include("apps.chat.urls")),
