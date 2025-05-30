@@ -7,8 +7,8 @@ from .views import (
 
 
 urlpatterns = [
-    path("auth/login/", LoginView.as_view(), name="auth-login-basic"),
     path("auth/signup/", SignUpView.as_view(), name="auth-register-basic"),
+    path("auth/login/", LoginView.as_view(), name="auth-login-basic"),
     path("auth/logout/", LogOutView.as_view(), name="auth-logout-basic"),
     path("auth/forgot_password/", ForgetPasswordView.as_view(), name="auth-forgot-password-basic"),
     path("auth/password_reset_done/", PasswordResetDoneView.as_view(), name="password_reset_done"),

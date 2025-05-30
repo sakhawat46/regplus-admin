@@ -41,7 +41,7 @@ DEBUG = os.environ.get("DEBUG", 'True').lower() in ['true', 'yes', '1']
 
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 # Current DJANGO_ENVIRONMENT
 ENVIRONMENT = os.environ.get("DJANGO_ENVIRONMENT", default="local")
@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "apps.services",
     "apps.custom_design",
     "apps.g_setting",
+    "apps.chat",
 
 
     "ckeditor",
@@ -83,17 +84,22 @@ INSTALLED_APPS = [
 
 
 # Rest framework
+# settings.py
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Optional, for browsable API
     ),
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ]
 }
 
 
 import datetime
 
 SIMPLE_JWT = {
-     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=30),
+     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
      'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
 }
 
@@ -250,3 +256,13 @@ CKEDITOR_CONFIGS = {
             ]),
         },
 }
+
+
+
+
+
+
+
+
+# Get your API key from https://ai.google.dev/
+GEMINI_API_KEY = 'AIzaSyAn2cc-HTHPVPCD0cMtmQi4IsSJPZnYywQ'

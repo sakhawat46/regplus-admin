@@ -222,10 +222,16 @@ class CustomPasswordResetConfirmView(AuthView):
             return self.render_to_response(context)
 
 
+
+
+
 class SignUpApiView(CreateAPIView):
     serializer_class = UserSerializer
 
+
+
 class LogInApiView(APIView):
+    permission_classes = [permissions.AllowAny]
     def post(self, request, *args, **kwargs):
         serializer = LoginSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)
