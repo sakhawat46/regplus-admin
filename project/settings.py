@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'widget_tweaks',
 ]
 
@@ -98,7 +99,7 @@ REST_FRAMEWORK = {
 import datetime
 
 SIMPLE_JWT = {
-     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
+     'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=60),
      'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
 }
 
