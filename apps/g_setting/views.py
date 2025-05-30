@@ -4,7 +4,10 @@ from .forms import CompanyInfoForm, TermsAndConditionsForm, PrivacyPolicyForm, F
 from .models import CompanyInfo,termsAlsoPrivacy, FooterInfo
 from web_project import TemplateLayout
 from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
 from django.views import View
+from .serializers import CompanyInfoSerializer,TermsAndConditinSerializer,PrivacyPolicySerializer
+from rest_framework.response import Response
 # Create your views here.
 
 
@@ -99,3 +102,31 @@ class CustomFooterInfo(View):
         context = kwargs
         context = TemplateLayout.init(self, context)
         return context
+    
+
+class CompanyInfoListAPIView(APIView):
+    """
+    API view to list company information.
+    """
+    def get(self, request):
+        company_info = CompanyInfo.objects.all()
+        serializer = CompanyInfoSerializer(company_info, many=True)
+        return Response(serializer.data)
+    
+class TermsAndConditionsListAPIView(APIView):
+    """
+    API view to list terms and conditions.
+    """
+    def get(self, request):
+        terms_conditions = termsAlsoPrivacy.objects.filter(page_name='terms')
+        serializer = TermsAndConditinSerializer(terms_conditions, many=True)
+        return Response(serializer.data)
+    
+class PrivacyPolicyListAPIView(APIView):
+    """
+    API view to list privacy policy.
+    """
+    def get(self, request):
+        privacy_policy = termsAlsoPrivacy.objects.filter(page_name='privacy')
+        serializer = PrivacyPolicySerializer(privacy_policy, many=True)
+        return Response(serializer.data)
