@@ -47,9 +47,11 @@ urlpatterns = [
     # Services urls
     path("", include("apps.services.urls")),
 
-
     #servey,heru,card
     path("", include("apps.custom_design.urls")),
+    
+    # Chat urls
+    path("", include("apps.chat.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -9,7 +9,7 @@ This file is a view controller for multiple pages as a module.
 Here you can override the page view layout.
 Refer to dashboards/urls.py file for more pages.
 """
-@method_decorator(admin_required, name='dispatch')
+# @method_decorator(admin_required, name='dispatch')
 class DashboardsView(LoginRequiredMixin, TemplateView):
     # Predefined function
     def get_context_data(self, **kwargs):
