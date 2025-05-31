@@ -21,22 +21,38 @@ class ConversationListCreateAPIView(APIView):
     def get(self, request):
         conversations = Conversation.objects.filter(users=request.user)
         serializer = ConversationSerializer(conversations, many=True)
-        return Response(serializer.data)
+
+        response_data = {
+            "success": True,
+            "status": status.HTTP_200_OK,
+            "message": "Successfully retrieved",
+            "data": serializer.data
+        }
+        return Response(response_data)
+
 
     def post(self, request):
         conversation = Conversation.objects.create()
         conversation.users.add(request.user)
         serializer = ConversationSerializer(conversation)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        response_data = {
+                "success": True,
+                "status": status.HTTP_201_CREATED,
+                "message": "Successfully created",
+                "data": serializer.data
+            }
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 
-class ConversationDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk):
-        conversation = get_object_or_404(Conversation.objects.filter(users=request.user),pk=pk)
-        serializer = ConversationSerializer(conversation)
-        return Response(serializer.data)
+# class ConversationDetailAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request, pk):
+#         conversation = get_object_or_404(Conversation.objects.filter(users=request.user),pk=pk)
+#         serializer = ConversationSerializer(conversation)
+#         return Response(serializer.data)
 
 
 class MessageCreateAPIView(APIView):
@@ -64,7 +80,17 @@ class MessageCreateAPIView(APIView):
         
         # Serialize and return the message
         serializer = MessageSerializer(message)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+        response_data = {
+                "success": True,
+                "status": status.HTTP_201_CREATED,
+                "message": "Successfully created",
+                "data": serializer.data
+            }
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    
+    
     
 
 class ConversationDeleteAPIView(APIView):

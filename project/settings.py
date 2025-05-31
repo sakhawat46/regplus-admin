@@ -77,12 +77,6 @@ INSTALLED_APPS = [
     'widget_tweaks',
 ]
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': (
-#         'rest_framework_simplejwt.authentication.JWTAuthentication',
-#     ),
-# }
-
 
 # Rest framework
 # settings.py
