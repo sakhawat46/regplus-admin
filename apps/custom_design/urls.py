@@ -50,8 +50,10 @@ urlpatterns = [
     path('api/cards/', CardViewApi.as_view(), name='api_cards'),
     path('api/videos/', VideoViewApi.as_view(), name='api_videos'),
     path('api/faqs/', FaqViewApi.as_view(), name='api_faqs'),
+
     path('api/home-heru/', HomeHeroViewApi.as_view(), name='home_heru'),
     path('api/home-cards/', HomecardViewApi.as_view(), name='home_cards'),
+    
     path('api/home-footer-upper/', HomeFooterUpperSerializer.as_view(), name='home_footer_upper'),
     path('api/about-us/',AboutUsViewApi.as_view(),name='about_us'),
     path('api/survey/questions/', SurveyQuestionListApiView.as_view(), name='survey-questions'),

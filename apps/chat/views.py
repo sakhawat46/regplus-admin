@@ -45,14 +45,7 @@ class ConversationListCreateAPIView(APIView):
         return Response(response_data, status=status.HTTP_201_CREATED)
 
 
-
-# class ConversationDetailAPIView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, pk):
-#         conversation = get_object_or_404(Conversation.objects.filter(users=request.user),pk=pk)
-#         serializer = ConversationSerializer(conversation)
-#         return Response(serializer.data)
+    
 
 
 class MessageCreateAPIView(APIView):
@@ -89,14 +82,24 @@ class MessageCreateAPIView(APIView):
                 "data": serializer.data
             }
         return Response(response_data, status=status.HTTP_201_CREATED)
-    
-    
-    
+
+
 
 class ConversationDeleteAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def delete(self, request, conversation_id):
-        conversation = Conversation.objects.filter(users__id=request.user.id)
-        conversation.delete()
-        return Response({"detail": "Conversation deleted successfully."},status=status.HTTP_204_NO_CONTENT)
+        try:
+            conversation = Conversation.objects.get(id=conversation_id,users__id=request.user.id)
+            conversation.delete()
+
+            response_data = {
+                    "success": True,
+                    "status": status.HTTP_204_NO_CONTENT,
+                    "message": "Conversation deleted successfully"
+                }
+            return Response(response_data, status=status.HTTP_204_NO_CONTENT)
+                        
+        except Conversation.DoesNotExist:
+            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+

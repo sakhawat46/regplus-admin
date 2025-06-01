@@ -24,6 +24,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer, LoginSerializer
 from django.contrib import messages
+from rest_framework import status
+
 User = get_user_model()
 
 
@@ -222,11 +224,33 @@ class CustomPasswordResetConfirmView(AuthView):
             return self.render_to_response(context)
 
 
+# class SignUpApiView(CreateAPIView):
+#     serializer_class = UserSerializer
 
 
+class SignUpApiView(APIView):
+    authentication_classes = []
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
 
-class SignUpApiView(CreateAPIView):
-    serializer_class = UserSerializer
+            response_data = {
+                "success": True,
+                "status": status.HTTP_201_CREATED,
+                "message": "Successfully created",
+                "data": serializer.data
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        response_error = {
+            "success": False,
+            "status": status.HTTP_400_BAD_REQUEST,
+            "message": "Could not create",
+            "data": serializer.errors
+        }
+        return Response(response_error, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 
@@ -238,6 +262,8 @@ class LogInApiView(APIView):
         user = serializer.validated_data
         refresh = RefreshToken.for_user(user)
         return Response({
+            "success": True,
+            "status": status.HTTP_202_ACCEPTED,
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         })
@@ -250,7 +276,11 @@ class LogOutApiView(APIView):
             refresh_token = request.data["refresh"]
             token = RefreshToken(refresh_token)
             token.blacklist()
-            return Response({"detail": "Logout successful"})
+            return Response({
+                "success": True,
+                "status": status.HTTP_200_OK,
+                "detail": "Logout successful"
+                })
         except Exception as e:
             return Response({"detail": str(e)}, status=400)
 

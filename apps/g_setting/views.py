@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from django.views import View
 from .serializers import CompanyInfoSerializer,TermsAndConditinSerializer,PrivacyPolicySerializer
 from rest_framework.response import Response
+from rest_framework import status
 # Create your views here.
 
 
@@ -105,28 +106,41 @@ class CustomFooterInfo(View):
     
 
 class CompanyInfoListAPIView(APIView):
-    """
-    API view to list company information.
-    """
     def get(self, request):
         company_info = CompanyInfo.objects.all()
         serializer = CompanyInfoSerializer(company_info, many=True)
-        return Response(serializer.data)
+    
+        response_data = {
+            "success": True,
+            "status": status.HTTP_200_OK,
+            "message": "Successfully retrieved",
+            "data": serializer.data
+        }
+        return Response(response_data)
     
 class TermsAndConditionsListAPIView(APIView):
-    """
-    API view to list terms and conditions.
-    """
     def get(self, request):
         terms_conditions = termsAlsoPrivacy.objects.filter(page_name='terms')
         serializer = TermsAndConditinSerializer(terms_conditions, many=True)
-        return Response(serializer.data)
+    
+        response_data = {
+            "success": True,
+            "status": status.HTTP_200_OK,
+            "message": "Successfully retrieved",
+            "data": serializer.data
+        }
+        return Response(response_data)
+
     
 class PrivacyPolicyListAPIView(APIView):
-    """
-    API view to list privacy policy.
-    """
     def get(self, request):
         privacy_policy = termsAlsoPrivacy.objects.filter(page_name='privacy')
         serializer = PrivacyPolicySerializer(privacy_policy, many=True)
-        return Response(serializer.data)
+    
+        response_data = {
+            "success": True,
+            "status": status.HTTP_200_OK,
+            "message": "Successfully retrieved",
+            "data": serializer.data
+        }
+        return Response(response_data)

@@ -3,7 +3,6 @@ from .views import (ConversationListCreateAPIView, MessageCreateAPIView, Convers
 
 urlpatterns = [
     path('api/chat/', ConversationListCreateAPIView.as_view(), name='conversation-list-create'),
-    # path('api/chat/<int:pk>/', ConversationDetailAPIView.as_view(), name='conversation-detail'),
-    path('api/chat/<int:conversation_id>/messages/', MessageCreateAPIView.as_view(), name='message-create'),
+    path('api/chat/<int:conversation_id>/', MessageCreateAPIView.as_view(), name='message-create'),
     path('api/chat/<int:conversation_id>/delete/', ConversationDeleteAPIView.as_view(), name='delete-conversation'),
 ]

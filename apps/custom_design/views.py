@@ -404,32 +404,50 @@ class FAQDeleteView(DeleteView):
 
 
 # Apis Class    
-from .serializers import VideoSerializer,FaqSerializer,HomeHeroSerializer,HomecardSerializer,HomeFooterUpperSerializer,AboutUsSerializer
-class CardViewApi(ListAPIView):
+from .serializers import (
+    VideoSerializer,FaqSerializer,HomeHeroSerializer,
+    HomecardSerializer,HomeFooterUpperSerializer,
+    AboutUsSerializer
+    )
+
+class BaselistApiView(ListAPIView):
+    def list(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        response_data = {
+                "success": True,
+                "status": status.HTTP_201_CREATED,
+                "message": "Successfully created",
+                "data": serializer.data
+            }
+        return Response(response_data, status=status.HTTP_201_CREATED)
+
+class CardViewApi(BaselistApiView):
     queryset = MainModel.objects.filter(page_name='home', page_section='card')
     serializer_class = CardSerializer
-class VideoViewApi(ListAPIView):
+    
+
+class VideoViewApi(BaselistApiView):
     queryset = MainModel.objects.filter(page_name='train&FAQ', page_section='hero')
     serializer_class = VideoSerializer
 
-class FaqViewApi(ListAPIView):
+class FaqViewApi(BaselistApiView):
     queryset = MainModel.objects.filter(page_name='train&FAQ', page_section='down')
     serializer_class = FaqSerializer
 
 
-class HomeHeroViewApi(ListAPIView):
+class HomeHeroViewApi(BaselistApiView):
     queryset = MainModel.objects.filter(page_name='home', page_section='hero')
     serializer_class = HomeHeroSerializer
 
-class HomecardViewApi(ListAPIView):
+class HomecardViewApi(BaselistApiView):
     queryset = MainModel.objects.filter(page_name='home', page_section='card')
     serializer_class = HomecardSerializer
 
-class HomeFooterUpperSerializer(ListAPIView):
+class HomeFooterUpperSerializer(BaselistApiView):
     queryset=MainModel.objects.filter(page_name='home',page_section='down')
     serializer_class=HomeFooterUpperSerializer
 
-class AboutUsViewApi(ListAPIView):
+class AboutUsViewApi(BaselistApiView):
     queryset=MainModel.objects.filter(page_name='about',page_section='hero')
     serializer_class=AboutUsSerializer
 
