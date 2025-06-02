@@ -55,6 +55,9 @@ urlpatterns = [
     
     # Chat urls
     path("", include("apps.chat.urls")),
+
+    # Chat urls
+    path("", include("apps.subscription.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

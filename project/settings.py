@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "apps.custom_design",
     "apps.g_setting",
     "apps.chat",
+    "apps.subscription",
 
 
     "ckeditor",
