@@ -29,11 +29,6 @@ from rest_framework import status
 User = get_user_model()
 
 
-
-
-
-
-
 class AuthView(TemplateView):
     # Predefined function
     def get_context_data(self, **kwargs):
@@ -224,8 +219,6 @@ class CustomPasswordResetConfirmView(AuthView):
             return self.render_to_response(context)
 
 
-# class SignUpApiView(CreateAPIView):
-#     serializer_class = UserSerializer
 
 
 class SignUpApiView(APIView):
@@ -285,9 +278,48 @@ class LogOutApiView(APIView):
             return Response({"detail": str(e)}, status=400)
 
 
-class ProfileApiView(RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = UserSerializer
 
-    def get_object(self):
-        return self.request.user
+class ProfileApiView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, *args, **kwargs):
+        serializer = UserSerializer(request.user)
+
+        response_data = {
+            "success": True,
+            "status": status.HTTP_200_OK,
+            "message": "Successfully retrieved",
+            "data": serializer.data
+        }
+        return Response(response_data)
+    
+    def put(self, request, *args, **kwargs):
+        serializer = UserSerializer(request.user, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+
+            response_data = {
+                "success": True,
+                "status": status.HTTP_201_CREATED,
+                "message": "Successfully created",
+                "data": serializer.data
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        response_error = {
+            "success": False,
+            "status": status.HTTP_400_BAD_REQUEST,
+            "message": "Could not create",
+            "data": serializer.errors
+        }
+        return Response(response_error, status=status.HTTP_400_BAD_REQUEST)
+
+    
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        user.delete()
+        response_data = {
+            "success": True,
+            "status": status.HTTP_204_NO_CONTENT,
+            "message": "User deleted successfully"
+        }
+        return Response(response_data, status=status.HTTP_204_NO_CONTENT)

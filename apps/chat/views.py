@@ -94,12 +94,12 @@ class ConversationDeleteAPIView(APIView):
             conversation.delete()
 
             response_data = {
-                    "success": True,
-                    "status": status.HTTP_204_NO_CONTENT,
-                    "message": "Conversation deleted successfully"
-                }
-            return Response(response_data, status=status.HTTP_204_NO_CONTENT)
+                "success": True,
+                "status": status.HTTP_200_OK,
+                "message": "Conversation deleted successfully"
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
                         
         except Conversation.DoesNotExist:
-            return Response({"detail": "Not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Not found."}, status=status.HTTP_204_NO_CONTENT)
 

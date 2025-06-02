@@ -46,10 +46,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    name = models.CharField(max_length=30, blank=True)
-    family_name = models.CharField(max_length=50, blank=True)
-    company_name = models.CharField(max_length=50, blank=True)
-    job_title = models.CharField(max_length=50, blank=True)
+    name = models.CharField(max_length=30, blank=True, null=True)
+    family_name = models.CharField(max_length=50, blank=True, null=True)
+    company_name = models.CharField(max_length=50, blank=True, null=True)
+    job_title = models.CharField(max_length=50, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -31,7 +31,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'name': {'required': False},
             'family_name': {'required': False},
             'company_name': {'required': False},
-            'avatar': {'required': False},
+            'avatar': {'required': False, 'allow_null': True},
         }
 
 class UserSerializer(serializers.ModelSerializer):
@@ -71,49 +71,57 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"password": "Password fields didn't match."})
         return data
 
-    def create(self, validated_data):
-        profile_data = validated_data.pop('profile', None)
 
+
+    def create(self, validated_data):
+        # Get profile data or default to empty dict if none provided
+        profile_data = validated_data.pop('profile', {})  
+
+        # Create the user
         user = User.objects.create_user(
-            email=validated_data['email'],
-            password=validated_data['password'],
-            user_type=validated_data.get('user_type', 'user'),
-            is_active=validated_data.get('is_active', True),
-            is_staff=validated_data.get('is_staff', False)
+        email=validated_data['email'],
+        password=validated_data['password'],
+        user_type=validated_data.get('user_type', 'user'),
+        is_active=validated_data.get('is_active', True),
+        is_staff=validated_data.get('is_staff', False)
         )
 
-        if profile_data:
-            Profile.objects.create(
-                user=user,
-                avatar=profile_data.get('avatar'),
-                name=profile_data.get('name'),
-                family_name=profile_data.get('family_name'),
-                company_name=profile_data.get('company_name'),
-                job_title=profile_data.get('job_title')
-            )
+        # Always create a profile (with provided data or defaults)
+        Profile.objects.create(
+        user=user,
+        avatar=profile_data.get('avatar'),
+        name=profile_data.get('name'),
+        family_name=profile_data.get('family_name'),
+        company_name=profile_data.get('company_name'),
+        job_title=profile_data.get('job_title')
+        )
 
         return user
 
-    def update(self, instance, validated_data):
-        profile_data = validated_data.pop('profile', None)
 
+    
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile', {})  # Default to empty dict
+        
+        # Update user fields
         instance.email = validated_data.get('email', instance.email)
         instance.user_type = validated_data.get('user_type', instance.user_type)
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.is_staff = validated_data.get('is_staff', instance.is_staff)
-
+        
         if 'password' in validated_data:
             instance.set_password(validated_data['password'])
-
+        
         instance.save()
 
-        if profile_data:
+        # Update profile
+        if hasattr(instance, 'profile'):
             profile = instance.profile
-            profile.avatar = profile_data.get('avatar', profile.avatar)
-            profile.name = profile_data.get('name', profile.name)
-            profile.family_name = profile_data.get('family_name', profile.family_name)
-            profile.company_name = profile_data.get('company_name', profile.company_name)
-            profile.job_title = profile_data.get('job_title', profile.job_title)
+            for attr, value in profile_data.items():
+                setattr(profile, attr, value)
             profile.save()
+        elif profile_data:  # Create profile if it doesn't exist
+            Profile.objects.create(user=instance, **profile_data)
 
         return instance
